@@ -9,7 +9,7 @@ urlpatterns = [
     url(r'^$', 'qqqq.views.home', name='home'),
     url(r'^$','accounts.views.login', name='login'),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^accounts/', include('accounts.urls')),
-    url(r'^qq/', include('qq.urls')),
+    url(r'^accounts/', include(accounts.urls)),
+    url(r'^qq/', include(qq.urls)),
  
 ]
