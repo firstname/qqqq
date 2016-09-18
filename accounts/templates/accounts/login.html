@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block guid %}  - <a href="{% url 'login' %}">login </a>{% endblock %}
+  {% block title %} login {% endblock %} 
+{% block content %}
+    <div class="well">
+        <h1>用户登录</h1>
+        <p>&nbsp;</p>
+
+    {% if user_not_exist %}
+        <div class="alert alert-error">
+            <h4>用户名错误或者不存在!</h4>
+        </div>
+    {% endif %}    
+    {% if password_is_wrong %}
+        <div class="alert alert-error">
+            <h4>密码错误!</h4>
+        </div>
+    {% endif %}    
+
+
+        <form class="form-horizontal" action="" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <p class="form-actions">
+                <input type="submit" value="登录" class="btn btn-primary">
+                <a href="{% url 'register' %}"><input type="button" value="忘记密码" class="btn btn-danger"></a>
+                <a href="{% url 'register' %}"><input type="button" value="新用户？" class="btn btn-success"></a>
+            </p>
+        </form>
+    </div>
+
+{% endblock %}

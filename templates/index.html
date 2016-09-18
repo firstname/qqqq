@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block guid %}   {% endblock %}
+  {% block title %} index {% endblock %} 
+{% block content %}
+
+
+<!-- if stu.同学 -->
+  {% if perms.accounts.is_student %}
+    <p><h3>最新动态</h3></p>
+    <div class="well">
+      <p>***完成了<a href="{% url 'qlist' %}">抑郁自评量表</a></p>
+      <p>***更新了<a href="{% url 'qlist' %}">个人档案</a></p>
+     </div>
+
+  {% endif %}
+<!-- if tea.老师 -->
+  {% if perms.accounts.is_teacher %}
+    <p><h3>最新动态</h3></p>
+    <div class="well">
+
+      <p>***老师发布了<a href="{% url 'qlist' %}">抑郁筛查</a>任务</p>
+      <p>***老师发表了<a href="{% url 'qlist' %}">如何摆脱考试焦虑</a></p>
+      <p>***同学完成了<a href="{% url 'qlist' %}">抑郁自评量表</a></p>
+      <p>***同学更新了<a href="{% url 'qlist' %}">个人档案</a></p>
+      <p>***同学完成了咨询<a href="{% url 'qlist' %}">查看</a></p>
+
+     
+      <p><a href="{% url 'qlist' %}">入学测试</a>任务完成了65%</p>
+      <p><a href="{% url 'qlist' %}">抑郁筛查</a>任务完成了95%</p>
+      
+      <p><a href="{% url 'qlist' %}">抑郁自评量表</a>完成了6588人次</p>
+      <p><a href="{% url 'qlist' %}">个人档案</a>共1288份</p></div>
+
+
+
+  {% endif %}
+
+  {% endblock %} 
+
+
+

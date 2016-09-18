@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block guid %}  - <a href="{% url 'userlist' %}"> students list </a>{% endblock %}
+  {% block title %} students list {% endblock %} 
+{% block content %}
+
+    {% if not user.is_authenticated %}
+        <div class="alert alert-error">
+
+
+            您还没有<a href="{% url 'login' %}">登录</a> 
+
+        </div>
+ {% else %} 
+ 
+    {% if not perms.accounts.is_teacher %}
+        <div class="alert alert-error">
+
+
+            您没有accounts.is_teacher权限</a> 
+
+        </div>
+    {% else %}  
+    <div class="well">
+        <h1>学生列表</h1>
+        
+        <div  class="alert alert-success">
+            <table class="table table-striped"> 
+                <thead>
+              <tr>
+                <th>id</th>
+                <th>用户名</th>
+                <th>邮件</th>
+                <th>是否有效</th>
+                <th>创建的日期</th>
+                <th>最后一次登录的日期</th>
+                <!-- <th>管理</th>
+                <th>超级</th>
+                <th>密码</th>
+                <th>姓</th>
+                <th>名</th>
+                <th>logentry</th>
+                <th>userprofile</th>
+                <th>用户的组</th>
+                <th>用户的权限</th> -->
+
+                </tr>  
+        </thead>
+            <tbody>   
+        {%for uuu in users%}{% for stu in stus %}
+                {% if uuu.id == stu.user_id %}
+        <tr>
+        <td>{{uuu.id}}</td>
+        <td>{{uuu.username}}</td>
+        <td>{{user.email}}</td>
+        <td>{{uuu.is_active}}</td>
+        <td>{{uuu.date_joined}}</td>
+        <td>{{uuu.last_login}}</td>
+        <!-- <td>{{uuu.is_staff}}</td>
+        <td>{{uuu.is_superuser}}</td>
+        <td>{{uuu.password}}</td>
+        <td>{{uuu.first_name}}</td>
+        <td>{{uuu.last_name}}</td>
+        <td>{{uuu.logentry}}</td>
+        <td>{{uuu.userprofile}}</td>
+        <td>{{uuu.groups}}</td>
+        <td>{{uuu.user_permissions}}</td> </td> -->
+               
+        </tr>
+        
+         {% endif %}
+        {% endfor %}{% endfor %} 
+        </tbody></table>
+    </div></div>
+    {% endif %} 
+  {% endif %} 
+{% endblock %}

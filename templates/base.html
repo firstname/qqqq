@@ -1,0 +1,166 @@
+﻿{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="http://v3.bootcss.com/favicon.ico">
+    <title> {% block title %}{% endblock %}---mindbook</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <!-- <link href="{% static 'css/navbar-fixed-top.css' %}" rel="stylesheet"> -->
+    <!-- <link href="{% static 'css/signin.css' %}" rel="stylesheet"> -->
+    <link href="{% static 'css/offcanvas.css' %}" rel="stylesheet">
+    <link href="{% static 'css/sticky-footer-navbar.css' %}" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="{% static 'js/ie-emulation-modes-warning.js' %}"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><span class="label label-success">MindBook</span></a>
+        </div>
+
+
+        <div id="navbar" class="navbar-collapse collapse">
+
+        {% if user.is_authenticated %} 
+
+        <ul class="nav navbar-nav">          
+            <li class="active"><!-- <a href="/">Home</a> --></li>
+            {% block navbar %} {% endblock %}
+            {% if perms.accounts.is_student and not user.is_staff%}
+                <li><a href="{% url 'tlist' %}">my task</a></li>
+            {% endif %}
+            {% if perms.accounts.is_teacher %}
+                    <li class="dropdown">
+                      <a href="/#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">task <span class="caret"></span></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="{% url 'tlist' %}">mine tasks</a></li>
+                        <li><a href="{% url 'tlist' %}">create new task</a></li>
+                        <li><a href="{% url 'tlist' %}">all tasks</a></li>
+                      </ul>
+                    </li>
+
+                    <li class="dropdown">
+                      <a href="/#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">questionare <span class="caret"></span></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="{% url 'upfiles' %}">create new questionare</a></li>
+                        <li><a href="{% url 'qlist' %}">all questionare</a></li>
+                      </ul>
+                    </li>
+
+                    <li class="dropdown">
+                      <a href="/#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">user <span class="caret"></span></a>
+                      <ul class="dropdown-menu">
+                        {% if user.is_active and user.is_staff %}
+                        <li><a href="{% url 'userlist' %}">all users</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li class="dropdown-header">teacher</li>
+                        <li><a href="{% url 'addtea' %}">add one new teacher</a></li>
+                        {% endif %}
+                        <li role="separator" class="divider"></li>
+                        <li class="dropdown-header">student</li>
+                        <li><a href="{% url 'addstu' %}">add one new student</a></li>
+                        <li><a href="{% url 'impstu' %}">import many new students</a></li>
+                        <li><a href="{% url 'stulist' %}">all students</a></li>
+                      </ul>
+                    </li>
+            {% endif %}
+          </ul>
+
+          <ul class="nav navbar-nav navbar-right">  
+            <li class="dropdown">
+              <a href="/" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">欢迎：{{user.username}} <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="{% url 'changepassword' %}">修改密码</a></li>
+                <li><a href="{% url 'logout' %}">退出</a></li>
+                <li role="separator" class="divider"></li>
+                <li class="dropdown-header">您的用户角色是:
+                    {% if user.is_active and user.is_superuser %} 超级用户
+                    {% else %}
+                        {% if user.is_active and user.is_staff %} 管理员
+                        {% else %}
+                            {% if perms.accounts.is_student %}学生{% endif %}
+                            {% if perms.accounts.is_teacher %}老师{% endif %} 
+                        {% endif %}
+                    {% endif %}</li>               
+              </ul><!-- /dropdown-menu -->
+            </li> <!-- /dropdown -->                      
+          </ul>
+        {% else %}
+          <ul class="nav navbar-nav navbar-right">  
+            <li ><a href="{% url 'login' %}" > <span class="label label-primary">登录</span></a></li>                   
+            <li > <a href="{% url 'register' %}"  ><span class="label label-primary">注册</span></a></li> 
+
+      {% endif %} 
+      </ul>
+         <!--  <form class="navbar-form navbar-right" action="login" method="post">
+            <div class="form-group">
+              <input type="text" placeholder="Email" class="form-control">
+            </div>
+            <div class="form-group">
+              <input type="password" placeholder="Password" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-success">Sign in</button>
+          </form> -->
+        </div><!--/.navbar-collapse -->
+      </div><!-- /.cnontainer -->
+    </nav>
+
+
+
+  <div class="container">
+{% block content %}
+
+{% endblock %}
+    </div> <!-- /container -->
+
+
+
+
+
+
+    <!--footer-->
+    <footer class="footer">
+      <div class="container">
+        © <span class="label label-success">MindBook</span> 2016 
+      </div>
+    </footer>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="{% static 'js/ie10-viewport-bug-workaround.js' %}"></script>
+
+    <script src="{% static 'js/offcanvas.js' %}"></script>
+  </body>
+</html>

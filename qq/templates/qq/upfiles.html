@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block guid %}  - <a href="{% url 'qlist' %}">问卷 </a>  - <a href="{% url 'upfiles' %}">上传问卷 </a>{% endblock %}
+  {% block title %} qview {% endblock %} 
+{% block content %}
+
+
+    <div class="well">
+ 
+            <h1>upload</h1>
+            <p>&nbsp;</p>
+            <form class="alert alert-success" action="" method="post" enctype="multipart/form-data" accept-charset="utf-8">
+            {% csrf_token %}
+             {{ form.as_p }}
+            <p >  <input type="submit" value="上传" >      </p>
+            </form>
+
+     </div>
+{% endblock %}

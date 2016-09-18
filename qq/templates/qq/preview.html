@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+
+{% block guid %}  - <a href="{% url 'qlist' %}">问卷 </a>  - 预览 {% endblock %}
+  {% block title %} qview {% endblock %} 
+{% block content %}
+
+
+ 
+    <div  class="well">
+       <h1>预览:{{thefile.title}}</h1>
+       <h6>{{thefile.createdtime}}</h6>
+       <!--  choicename:{{choicename}}
+        scorename:{{scorename}} -->
+        <h6><span class="label label-success">简介</span>{{thefile.desc}}</h6>
+        <h5><span class="label label-success">指导语</span>{{thefile.guidance}}</h5>
+
+
+
+
+<form action="{% url 'qstore' pp=thefile.pk  %} " method="POST"  class="alert alert-success">
+             {% csrf_token %}
+                
+        <!-- filet.items -->
+        <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>question</th>
+                {% for choice in choicename%}
+                {% if choice != 'ID'%}
+                <th>{{choice}}</th>
+                {% endif %}
+                {% endfor %}
+                {% for score in scorename%}
+                {% if score != 'ID'%}
+                <th>{{score}}</th>
+                {% endif %}
+                {% endfor %}
+
+            </tr>
+           </thead>
+            <tbody>                
+           {% for k,v in filet.items %} 
+              <tr> <!-- <td>{{k}}</td> 
+                <td>{{v}}</td>   -->         
+                
+                {% for v0,v1 in v.items %}
+                    {% if v0 == 'ID' %} 
+                 <!-- <td>{{v0}}</td> -->
+                  <td>{{v1}}</td> 
+                    {% endif %}  
+                    {% if v0 == 'question' %} 
+                 <!-- <td>{{v0}}</td> -->
+                  <td>{{v1}}</td> 
+                    {% endif %}  
+                    {% if 'choice' in v0 %} 
+                 <!-- <td>{{v0}}</td> -->
+                  <td>{{v1}}</td>  
+                    {% endif %}    
+                    {% if 'score' in v0 %} 
+                 <!-- <td>{{v0}}</td>  --> 
+                  <td> {{v1}} </td> 
+                    {% endif %}          
+                {% endfor %}
+
+
+            </tr>
+            {% endfor %}
+ 
+            </tbody>
+          </table>
+          <a href="{% url 'qstore' pp=thefile.pk %}">发布为问卷 </a>
+</form>
+<a href="javascript:history.go(-1)"> 返回</a>
+<!--        原始文件内容如下:
+{{fileread|linebreaks}}
+
+qustiont.items
+        <table> 
+            <tr > <td>key</td>
+                <td>--</td><td>value</td>
+                <td>...</td><td>v0.key</td>
+                <td>--</td><td>v0.value</td>
+                <td>...</td><td>v1.key</td>
+                <td>--</td><td>v1.value</td>
+            </tr>                  
+           {% for k,v in questiont.items %} 
+           <tr > <td>{{k}}</td>
+                <td>--</td><td>{{v}}</td>           
+                
+                {% for v0,v1 in v.items %}
+                    {% if v0 == 'ID' %} 
+                 <td>...</td><td>{{v0}}</td>
+                 <td>--</td><td>{{v1}}</td> 
+                    {% endif %}  
+                    {% if v0 == 'question' %} 
+                 <td>...</td><td>{{v0}}</td>
+                 <td>--</td><td>{{v1}}</td> 
+                    {% endif %}        
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table> 
+ 
+        choicet.items
+        <table> 
+            <tr > <td>key</td>
+                <td>--</td><td>value</td>
+                <td>...</td><td>v0.key</td>
+                <td>--</td><td>v0.value</td>
+            </tr>                  
+           {% for k,v in choicet.items %} 
+           <tr > <td>{{k}}</td>
+                <td>--</td><td>{{v}}</td>           
+                
+                {% for v0,v1 in v.items %}
+                    {% if v0 == 'ID' %} 
+                 <td>...</td><td>{{v0}}</td>
+                 <td>--</td><td>{{v1}}</td> 
+                    {% endif %}  
+                    {% if 'choice' in v0 %} 
+                 <td>...</td><td>{{v0}}</td>
+                 <td>--</td><td>{{v1}}</td> 
+                    {% endif %}          
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>  
+
+        scoret.items
+        <table> 
+            <tr > <td>key</td>
+                <td>--</td><td>value</td>
+                <td>...</td><td>v0.key</td>
+                <td>--</td><td>v0.value</td>
+            </tr>                  
+           {% for k,v in scoret.items %} 
+           <tr > <td>{{k}}</td>
+                <td>--</td><td>{{v}}</td>           
+                
+                {% for v0,v1 in v.items %}
+                    {% if v0 == 'ID' %} 
+                 <td>...</td><td>{{v0}}</td>
+                 <td>--</td><td>{{v1}}</td> 
+                    {% endif %}  
+                    {% if 'score' in v0 %} 
+                 <td>...</td><td>{{v0}}</td>
+                 <td>--</td><td>{{v1}}</td> 
+                    {% endif %}          
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table> 
+                   
+
+        chsct.items
+        <table> 
+            <tr > <td>key</td>
+                <td>--</td><td>value</td>
+                <td>...</td><td>v0.key</td>
+                <td>--</td><td>v0.value</td>
+            </tr>                  
+           {% for k,v in chsct.items %} 
+           <tr > <td>{{k}}</td>
+                <td>--</td><td>{{v}}</td>           
+                
+                {% for v0,v1 in v.items %}
+                    {% if v0 == 'ID' %} 
+                 <td>...</td><td>{{v0}}</td>
+                 <td>--</td><td>{{v1}}</td> 
+                    {% endif %}   
+                    {% if 'choice' in v0 %} 
+                 <td>...</td><td>{{v0}}</td>
+                 <td>--</td><td>{{v1}}</td> 
+                    {% endif %}  
+                    {% if 'score' in v0 %} 
+                 <td>...</td><td>{{v0}}</td>
+                 <td>--</td><td>{{v1}}</td> 
+                    {% endif %}          
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>  -->
+                 
+
+
+
+
+
+            <!-- <table> 
+            <form action="{% url 'q_submit' pp=thefile.pk %} " method="POST">
+             {% csrf_token %}
+                转置之后的文件
+                    {% for k,v in questiont.items %}  
+                <tr >              
+                    <td>{{ forloopcounter }}</td>                     
+                            {% for k2,v2 in v.items %} 
+                            第二层循环,对第一层的value(list格式)分解
+                                <td>{{ v2 }}</td>                                                  
+                            {% endfor %}
+                            <td>-----</td>  
+            
+                            {% for k3,v3 in choicet.values %}                               
+                                <td><input type="radio" name="question{{ k }}" value="{{ v3 }}" />{{ v3 }}</td>
+                                不能用数字作name,否则取不到value
+                                <td>name=question{{ k }} </td>                                                   
+                            {% endfor %}                                                                                                      
+                </tr>           
+                {% endfor %} 
+                <tr>
+                    <td> </td>
+                    <td><input type="reset" value="全部重填"/> </td>
+                    <td> </td>
+                    <td><input type="submit" value="提交"/></td>
+                </tr>
+            </form>   
+            </table> -->
+        
+                                    
+    </div>
+    
+
+{% endblock %}

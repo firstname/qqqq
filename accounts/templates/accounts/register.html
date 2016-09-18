@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block guid %}  - <a href="{% url 'register' %}">register </a>{% endblock %}
+  {% block title %} register {% endblock %} 
+{% block content %}
+
+        
+    <div class="well">
+        <h1>用户注册</h1>
+        <p>&nbsp;</p>
+
+<!-- 注册表单开始 -->
+        <form class="form-horizontal" action="" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <p class="form-actions">
+                <input type="submit" value="注册" class="btn btn-primary">
+             
+            </p>
+        </form>
+    </div>
+
+{% endblock %}

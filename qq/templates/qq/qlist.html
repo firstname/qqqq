@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block guid %}  - <a href="{% url 'qlist' %}">问卷 </a>{% endblock %}
+  {% block title %} qlist {% endblock %} 
+{% block content %}
+ 
+    <div class=" well">
+        {% if qns %}
+            <h1>file below</h1>
+            <p>&nbsp;</p>
+        <div  class="alert alert-success">
+            <table class="table table-striped"> 
+                <thead>
+              <tr>
+                <th>序号</th>
+                <th>名称</th>
+                <!-- <th>创建者</th>
+                <th>创建时间</th> -->
+                <th> </th>
+                <th>状态</th>
+                <th>操作</th>
+                </tr>
+           </thead>
+            <tbody>
+            {% for qst in qns %}
+            <tr>
+               <td> {{ qst.pk }}</td>
+               <td> {{ qst.title }}</td>
+               <!-- <td> {{ qst.creater }}</td>
+               <td> {{ qst.createdtime }}</td>
+               <td>filename: {{ qst.filename }}</td>
+               <td>topic: {{ qst.topic }}</td>
+            </tr>
+            <tr> -->
+
+                <td>{% for rec in isrecord %}
+                  {% if rec.qnid.id == qst.id %}
+                  <a href="{% url 'q_result' pp=qst.pk %}">您已作答 </a>
+                  
+                   
+                  {% endif %}
+                {% endfor %}</td>
+
+                {% if qst.ifstored == 'not' %}
+                <td>尚未<a href="{% url 'qstore' pp=qst.pk %}">发布为问卷 </a></td>
+                <td><a href="{% url 'preview' pp=qst.pk %}">预览草稿 </a></td>
+                
+                {%else%}
+                <td>已发布为问卷</td>
+                <td><a href="{% url 'qview' pp=qst.pk %}">查看问卷 </a></td>
+                {%endif%}
+                <td><a href="{% url 'qdelete' pp=qst.pk %}">删除 </a></td>
+                
+            </tr>
+            {% endfor %} 
+            </tbody>
+            </table>
+        {% else %}
+            <h1>no files</h1>
+        {% endif %}
+        </div>
+    <p><a href="{% url 'upfiles' %}">create new questionare</a></p>
+     
+     </div>
+{% endblock %}

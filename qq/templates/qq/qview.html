@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block guid %}  - <a href="{% url 'qlist' %}">问卷 </a>  - 查看 {% endblock %}
+  {% block title %} qview {% endblock %} 
+{% block content %}
+
+
+ 
+    <div  class="well">
+       <h1>{{qn.title}}</h1>
+       
+        <h5><span class="label label-success">指导语</span>{{qn.guidance}}</h5>
+
+<!-- {{qqids}}{% for op in ops %}{{op.id}}{{op.option}}{% endfor %} -->
+<form action="{% url 'q_submit' pp=qn.pk %} " method="POST"  class="alert alert-success">
+{% csrf_token %}
+<table class="table table-striped">
+            <thead>
+              <tr>
+                <th>题号</th>
+            </tr>
+           </thead>
+            <tbody>                
+           {% for qq in qqs %} 
+              <tr> 
+       
+                <td>{{qq.qid}}</td>  
+                <td>{{qq.question}}</td>                      
+                {% for op in ops %}
+                    <!-- <td>{{op.qid.id}}--{{qq.qid}}***{{op.option}}</td> -->
+                    {% if op.qid.id == qq.id %}                  
+                  <td><input type="radio" name="q{{qq.id}}" value="{{op.option}}" />{{op.option}}</td> 
+                    {% endif %}                              
+                {% endfor %}
+            </tr>
+            {% endfor %}
+ 
+            </tbody>
+          </table>
+      
+<input type="reset" value="全部重填"/> <input type="submit" value="提交"/>
+</form>
+<a href="javascript:history.go(-1)"> 返回</a>
+  
+                                    
+</div>
+
+    
+
+{% endblock %}

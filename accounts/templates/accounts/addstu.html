@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block guid %}  
+  - <a href="{% url 'addstu' %}"> add new user </a>{% endblock %}
+  {% block title %} add user {% endblock %} 
+{% block content %}
+
+        
+    <div class="well">
+        <h1>add one single user</h1>
+        <p>&nbsp;</p>
+
+<!-- 注册表单开始 -->
+        <form class="alert alert-success" action="" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <p class="form-actions">
+                <input type="submit" value="add" class="btn btn-primary">
+             
+            </p>
+        </form>
+    </div>
+
+{% endblock %}

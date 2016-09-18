@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block guid %}  - <a href="{% url 'qlist' %}">问卷 </a>  - <a href="{% url 'qview' pp=qn.pk %}">查看问卷</a>   - {{qn.title}}量表结果{% endblock %}
+  {% block title %} 结果详情 {% endblock %} 
+
+{% block content %}
+
+ 
+    <div  class="well">
+       <h1>{{qn.title}}量表</h1>
+        <p>&nbsp;&nbsp;</p>                   
+<h5><span class="label label-success">作答人</span>{{qnr.takerid.username}}</h5>
+<h5><span class="label label-success">作答时间</span>{{qnr.taketime}}</h5> 
+
+<!-- {% for qr in qresult %}{{qr.qid.question}}{{qr.opt.option}}{{qr.opt.value}}{%endfor%} -->
+<div  class="alert alert-success">
+           <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>question</th>
+                <th>choice</th>
+                <th>score</th>
+            </tr>
+            </thead>
+            <tbody>                
+           {% for qr in qresult %}
+           <tr >  
+                <td>{{qr.qid.id}}</td>       
+                <td>{{qr.qid.question}}</td>
+                <td>{{qr.opt.option}}</td>       
+                <td>{{qr.opt.value}}</td>  
+
+                                                                                                        
+            </tr>           
+            {% endfor %} 
+             </tbody>
+            </table>     
+  </div>
+  <a href="javascript:history.go(-1)"> 返回</a>                                  
+    </div>
+
+    
+
+{% endblock %}

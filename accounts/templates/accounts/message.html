@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block guid %}   {% endblock %}
+
+  {% block title %} message {% endblock %} 
+
+{% block content %}
+
+ 
+        <div class="alert alert-error">
+             {{ words }},
+
+            <a href="javascript:history.go(-1)">返回上一页</a>
+             <a href="{% url 'home' %}">回到首页</a>
+        </div>
+
+    
+
+{% endblock %}

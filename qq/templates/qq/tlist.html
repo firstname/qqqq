@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block guid %}  - <a href="{% url 'tlist' %}">任务 </a>{% endblock %}
+  {% block title %} qlist {% endblock %} 
+{% block content %}
+ 
+    <div class=" ">
+
+        {% if createdtasks %}
+            <h1>tasks created by you are below</h1>
+            <p>&nbsp;</p>
+            <table>
+            {% for tsk in createdtasks %}
+            <tr>
+               <td>pk: {{ tsk.pk }}</td>
+               <td>creater: {{ tsk.creater }}</td>
+               <td>title: {{ tsk.title }}</td>
+               <td>desc: {{ tsk.desc }}</td>
+               <td>starttime: {{ tsk.starttime }}</td>
+               <td>endtime: {{ tsk.endtime }}</td>
+               <td>qnid: {{ tsk.qnid }}</td>
+               <td>stugroup: {{ tsk.stugroup }}</td>
+               <td>takencode: {{ tsk.takencode }}</td>
+            </tr>
+            <tr>
+                <td><a href=" ">view </a></td>
+
+            </tr>
+            {% endfor %} 
+            </table>
+        {% else %}
+            <h1>no tasks</h1>
+        {% endif %}
+    <p><a href="{% url 'upfiles' %}">create new questionare</a></p>
+     </div>
+{% endblock %}

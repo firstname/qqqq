@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+{% load url from future %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>
+        {% block title %} {% endblock %} ---sitename 
+    </title>
+</head>
+<body>
+
+{% if not user.is_authenticated %} 
+    <div class=" ">      
+         <p><a href="{% url 'login' %}">登录</a></p>
+         <p><a href="{% url 'register' %}">注册</a>
+    </div>
+{% else %} 
+    <div class=" " align="right">   
+            <p>欢迎：{{user.username}} 
+            {% if user.is_active and user.is_superuser %} 超级用户
+            {% else %}
+                {% if user.is_active and user.is_staff %} 管理员
+                {% else %}
+                    {% if perms.accounts.is_student %}同学{% endif %}
+                    {% if perms.accounts.is_teacher %}老师{% endif %} 
+                {% endif %}
+            {% endif %}
+            <a href="{% url 'changepassword' %}"> 修改密码</a>
+            <a href="{% url 'logout' %}"> 退出</a></p>
+    </div>  
+{% endif %} 
+    <div class=" " align="left"> 
+    <p>当前位置: <a href="{% url 'home' %}">Home </a>  {% block guid %} {% endblock %}</p>
+    </div> 
+    <div class=" " align="left"> 
+  {% block content %}   {% endblock %} 
+    </div> 
+</body>
+</html>
