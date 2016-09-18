@@ -9,8 +9,8 @@
     <div  class="well">
        <h1>{{qn.title}}量表</h1>
         <p>&nbsp;&nbsp;</p>                   
-<h5><span class="label label-success">作答人</span>{{qnr.takerid.username}}</h5>
-<h5><span class="label label-success">作答时间</span>{{qnr.taketime}}</h5> 
+<h5><span class="label label-success">作答人</span>{{qnr.taker_id}}</h5>
+<h5><span class="label label-success">作答时间</span>{{qnr.taken_time}}</h5> 
 
 <!-- {% for qr in qresult %}{{qr.qid.question}}{{qr.opt.option}}{{qr.opt.value}}{%endfor%} -->
 <div  class="alert alert-success">
@@ -26,10 +26,10 @@
             <tbody>                
            {% for qr in qresult %}
            <tr >  
-                <td>{{qr.qid.id}}</td>       
-                <td>{{qr.qid.question}}</td>
-                <td>{{qr.opt.option}}</td>       
-                <td>{{qr.opt.value}}</td>  
+                <td>{{qr.q_order}}</td>       
+                <td>{{qr.q_name}}</td>
+                <td>{{qr.o_name}}</td>       
+                <td>{{qr.o_value}}</td>  
 
                                                                                                         
             </tr>           

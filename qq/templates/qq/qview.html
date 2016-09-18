@@ -24,12 +24,12 @@
            {% for qq in qqs %} 
               <tr> 
        
-                <td>{{qq.qid}}</td>  
-                <td>{{qq.question}}</td>                      
+                <td>{{qq.q_order}}</td>  
+                <td>{{qq.q_name}}</td>                      
                 {% for op in ops %}
                     <!-- <td>{{op.qid.id}}--{{qq.qid}}***{{op.option}}</td> -->
-                    {% if op.qid.id == qq.id %}                  
-                  <td><input type="radio" name="q{{qq.id}}" value="{{op.option}}" />{{op.option}}</td> 
+                    {% if op.q_id.id == qq.id %}                  
+                  <td><input type="radio" name="q{{qq.id}}" value="{{op.o_name}}" />{{op.o_name}}</td> 
                     {% endif %}                              
                 {% endfor %}
             </tr>

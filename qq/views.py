@@ -42,12 +42,12 @@ def tlist(request):
 @permission_required('accounts.is_teacher', login_url="/")
 def qlist(request):
     user = request.user
-    qns = Questionare.objects.all().order_by('-createdtime')
-    qn = qns.filter(createdtime__lte=timezone.now()).order_by('-createdtime')#连字符“-”在“created_date”前表示降序排列。
+    qns = Questionare.objects.all().order_by('-created_time')
+    qn = qns.filter(created_time__lte=timezone.now()).order_by('-created_time')#连字符“-”在“created_date”前表示降序排列。
 
     #检查是否已经存在该人的作答记录
 
-    isrecord = QnRecord.objects.filter(takerid_id=user.id)
+    isrecord = QnRecord.objects.filter(taker_id_id=user.id)
   
     return render_to_response('qq/qlist.html', RequestContext(request, {
         'qns':qns,
@@ -68,10 +68,10 @@ def upfiles(request):
             title = request.POST.get('title', '')
             desc = request.POST.get('desc', '')
             guidance = request.POST.get('guidance', '')
-            itemcount = request.POST.get('itemcount', '')
-            subcount = request.POST.get('subcount', '')
+            itemcount = request.POST.get('item_count', '')
+            subcount = request.POST.get('sub_count', '')
             createdtime = timezone.now()
-            itemfile = request.FILES.get('itemfile', None)
+            itemfile = request.FILES.get('item_file', None)
             filename = itemfile.name
             filepath = 'files/upload/' + time.strftime('%Y/%m/%d/%H/%M/%S/')
             topic = request.POST.get('topic', '')  
@@ -92,16 +92,16 @@ def upfiles(request):
                     infile.title = title
                     infile.desc = desc
                     infile.guidance = guidance
-                    infile.itemcount = itemcount 
-                    infile.subcount = subcount 
-                    infile.createdtime = createdtime 
-                    #infile.itemfile = itemfile #会将文件保存在根目录下
-                    infile.filepath = filepath    
-                    infile.filename = filename
+                    infile.item_count = itemcount 
+                    infile.sub_count = subcount 
+                    infile.created_time = createdtime 
+                    #infile.item_file = itemfile #会将文件保存在根目录下
+                    infile.file_path = filepath    
+                    infile.file_name = filename
                     infile.topic = topic
-                    infile.fileformat = fileformat    
+                    infile.file_format = fileformat    
                     infile.save()          
-                    return render_to_response('qq/message.html', RequestContext(request, {'words':'上传成功','urlname':'qlist'}))
+                    return render_to_response('qq/message.html', RequestContext(request, {'words':'上传成功!','urlname':'qlist'}))
                 else:
                     return render_to_response('qq/message.html', RequestContext(request, {'words':'量表名称已经存在','urlname':'upfiles'}))            
             else:#用户不合法
@@ -124,35 +124,39 @@ def qstore(request,pp):
     thefile = get_object_or_404(Questionare, pk=pp)
     title = thefile.title
 
-    df = pd.read_excel(str(thefile.filepath)+str(thefile.filename))
+    df = pd.read_excel(str(thefile.file_path)+str(thefile.file_name))
     ind = df.index
     rows = len(df.index)
     columns = df.columns
     choicename = re.findall(r'choice+.',str(columns))
     choices = len(choicename)
 
-    if thefile.ifstored == 'not':
+    if thefile.if_stored == 'not':
         for row in range(rows):
             infile = Question()
-            infile.qnid = thefile #outkey of 'Question', must be a 'Question' instance
-            infile.qid = df.at[ind[row],'ID']
-            infile.question = df.at[ind[row],'question']
+            infile.qn_id = thefile #outkey of 'Question', must be a 'Question' instance
+            infile.qn_name = thefile.title
+            infile.q_order = df.at[ind[row],'ID']
+            infile.q_name = df.at[ind[row],'question']
             infile.group = df.at[ind[row],'group']
             infile.save()
             for choice in range(choices):
                 inf = Option()
-                inf.qid = infile
+                inf.q_id = infile
+                inf.q_name = infile.q_name
+                inf.qn_id = infile.qn_id
+                inf.qn_name = infile.qn_name
                 oid = choice+1
-                inf.oid = oid 
+                inf.o_order = oid 
                 choicen = 'choice'+ str(oid)
                 scoren = 'score'+ str(oid)
-                inf.option = df.at[ind[row],choicen]
-                inf.value = df.at[ind[row],scoren]
+                inf.o_name = df.at[ind[row],choicen]
+                inf.o_value = df.at[ind[row],scoren]
                 inf.save()
-        thefile.ifstored = 'yes'
+        thefile.if_stored = 'yes'
         thefile.save()
-        return render_to_response('qq/message.html', RequestContext(request, {'words':'保存成功','urlname':'qlist'}))
-    return render_to_response('qq/message.html', RequestContext(request, {'words':'该问卷已经保存过,如果要修改,请重新上出修改后的文件','urlname':'qlist'}))
+        return render_to_response('qq/message.html', RequestContext(request, {'words':'发布问卷成功','urlname':'qlist'}))
+    return render_to_response('qq/message.html', RequestContext(request, {'words':'该问卷已经发布过,如果要修改,请重新上出修改后的文件','urlname':'qlist'}))
 
 
                
@@ -164,7 +168,7 @@ def preview(request,pp):
     user = User.objects.get(username__exact= generate_user)
     if user is not None and user.is_active:
         thefile = get_object_or_404(Questionare, pk=pp)
-        fileread = pd.read_excel(str(thefile.filepath)+str(thefile.filename))
+        fileread = pd.read_excel(str(thefile.file_path)+str(thefile.file_name))
         filecolumn = fileread.columns
         question = fileread.loc[:,['ID','question']]
 
@@ -210,15 +214,15 @@ def qview(request,pp):
     user = User.objects.get(username__exact= generate_user)
     if user is not None and user.is_active:
         qn = get_object_or_404(Questionare, pk=pp)
-        qqs = Question.objects.filter(qnid_id=qn.id)
+        qqs = Question.objects.filter(qn_id_id=qn.id)
         qqids = []
         for qq in qqs:
             qqid = int(qq.id)
             qqids.append(qqid)
-        ops = Option.objects.filter(qid_id__in=qqids)
+        ops = Option.objects.filter(q_id_id__in=qqids)
         #检查是否已经存在该人的作答记录
         alreadytaken = 'no'
-        isrecord = QnRecord.objects.filter(Q(takerid=user), Q(qnid=qn))
+        isrecord = QnRecord.objects.filter(Q(taker_id=user), Q(qn_id=qn))
         if isrecord.count():
                 alreadytaken = 'yes'
         # for rec in isrecord:
@@ -234,6 +238,8 @@ def qview(request,pp):
             'alreadytaken': alreadytaken,
             }))
 
+
+
 @login_required
 def q_submit(request,pp):
     generate_user = request.user.username
@@ -241,42 +247,59 @@ def q_submit(request,pp):
     user = User.objects.get(username__exact= generate_user)
     if user is not None and user.is_active:
         qn = get_object_or_404(Questionare, pk=pp)
-        qqs = Question.objects.filter(qnid=qn.id)
+        qqs = Question.objects.filter(qn_id=qn.id)
 
     #已经post提交数据
     if request.method == 'POST': 
         #检查是否已经存在该人的作答记录
         alreadytaken = 'no'
-        isrecord = QnRecord.objects.filter(takerid=user)
+        isrecord = QnRecord.objects.filter(taker_id=user)
         for rec in isrecord:
             #检查是否已经存在该问卷的作答记录
-            if rec.qnid == qn:
+            if rec.qn_id == qn:
                 alreadytaken = 'yes'
                 return render_to_response('qq/message.html', RequestContext(request,
                      {'words':'您已经作答过该问卷','urlname':'javascript:history.go(-1)'}))
         for qq in qqs:
             qqid = qq.id
-            op = request.POST.get('q'+ str(qqid), '')#获取input提交的各name(对应模板里的q{{qq.id}})的value,即题目的选项
+            op = request.POST.get('q'+ str(qqid), '')#获取input提交的各name(对应模板qview.html里的q{{qq.id}})的value,即题目的选项
             if not op : #搜索values里面的空值
                 return render_to_response('qq/message.html', RequestContext(request,
                      {'words':'有题目漏选','urlname':'javascript:history.go(-1)'}))
         #计入问卷作答记录数据库
         qnr = QnRecord()
-        qnr.takerid = request.user
-        qnr.taketime = timezone.now()
-        qnr.qnid = qn
+        qnr.taker_id = request.user
+        qnr.taker_name = request.user.username
+        qnr.taken_time = timezone.now()
+        qnr.qn_id = qn
+        qnr.qn_name = qn.title
+        qnr.qn_score = 0
         qnr.save()
+
         for qq in qqs:
-            opts = Option.objects.filter(qid_id=qq.id)
-            for opt in opts:
-                if opt.option == op:
-                    #计入题目作答结果数据库
-                    qr = QResult()
-                    qr.qnrid = qnr
-                    qr.qid = qq
-                    qr.opt = opt #opt is an instance of Option
-                    qr.save()
-        qresult = QResult.objects.filter(qnrid_id=qnr.id)
+            qqid = qq.id
+            op = request.POST.get('q'+ str(qqid), '')
+             #获取选项和对应的值
+            opt = Option.objects.get(Q(q_id=qq),Q(o_name=op))
+            vl = opt.o_value
+            #计入题目作答结果数据库
+            qr = QResult()
+            qr.qnr_id = qnr
+            qr.taker_id = request.user
+            qr.taker_name = request.user.username
+            qr.taken_time = timezone.now()
+            qr.q_id = qq
+            qr.q_order = qq.q_order
+            qr.q_name = qq.q_name
+            qr.qn_id = qn
+            qr.qn_name = qn.title
+            qr.o_id = opt #opt is an instance of Option
+            qr.o_name = opt.o_name
+            qr.o_value = opt.o_value
+            qr.save()
+        
+       
+        qresult = QResult.objects.filter(qnr_id_id=qnr.id)
     return render_to_response('qq/result.html', RequestContext(request, 
             {'qn': qn,
             'qqs': qqs,
@@ -287,9 +310,8 @@ def q_submit(request,pp):
             'qresult': qresult,
             }))
 
-
 @login_required
-def q_submit0(request,pp):
+def q_submit0(request,pp):#字典方法,没有数据库读写
     generate_user = request.user.username
     #用户合法
     user = User.objects.get(username__exact= generate_user)
@@ -357,12 +379,12 @@ def q_result(request,pp):
     user = User.objects.get(username__exact= generate_user)
     if user is not None and user.is_active:
         qn = get_object_or_404(Questionare, pk=pp)
-        qqs = Question.objects.filter(qnid=qn.id)
+        qqs = Question.objects.filter(qn_id=qn.id)
 
         #问卷作答记录
-        qnr = QnRecord.objects.filter(Q(qnid=qn.id), Q(takerid=user))
+        qnr = QnRecord.objects.get(Q(qn_id=qn.id), Q(taker_id=user))
 
-        qresult = QResult.objects.filter(qnrid=qnr)
+        qresult = QResult.objects.filter(qnr_id=qnr)
     return render_to_response('qq/result.html', RequestContext(request, 
             {'qn': qn,
             'qqs': qqs,

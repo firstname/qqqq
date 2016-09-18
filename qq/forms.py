@@ -17,11 +17,11 @@ FILE_FORMAT = (
 )
         
 class QForm(ModelForm):
-    topic = forms.ChoiceField(choices=TOPIC_CHOICES,label='量表类型')
-    fileformat = forms.ChoiceField(choices=FILE_FORMAT,label='文件格式')
+    # topic = forms.ChoiceField(choices=TOPIC_CHOICES,label='量表类型')
+    # file_format = forms.ChoiceField(choices=FILE_FORMAT,label='文件格式')
     class Meta:
         model = Questionare
-        fields = ('title', 'desc','guidance','itemcount','subcount','itemfile','fileformat','topic',)
+        fields = ('title', 'desc','guidance','item_file',) #'topic','file_format',
     def clean(self):
         if not self.is_valid():
             raise forms.ValidationError(u"必填项没有填写")

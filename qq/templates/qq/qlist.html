@@ -6,16 +6,16 @@
  
     <div class=" well">
         {% if qns %}
-            <h1>file below</h1>
+            <h1>问卷</h1>
             <p>&nbsp;</p>
         <div  class="alert alert-success">
             <table class="table table-striped"> 
                 <thead>
               <tr>
-                <th>序号</th>
+                <th>编号</th>
                 <th>名称</th>
-                <!-- <th>创建者</th>
-                <th>创建时间</th> -->
+                <th>上传者</th>
+                <th>上传时间</th>
                 <th> </th>
                 <th>状态</th>
                 <th>操作</th>
@@ -26,22 +26,22 @@
             <tr>
                <td> {{ qst.pk }}</td>
                <td> {{ qst.title }}</td>
-               <!-- <td> {{ qst.creater }}</td>
-               <td> {{ qst.createdtime }}</td>
-               <td>filename: {{ qst.filename }}</td>
+               <td> {{ qst.creater }}</td>
+               <td> {{ qst.created_time }}</td>
+               <!-- <td>filename: {{ qst.filename }}</td>
                <td>topic: {{ qst.topic }}</td>
             </tr>
             <tr> -->
 
                 <td>{% for rec in isrecord %}
-                  {% if rec.qnid.id == qst.id %}
+                  {% if rec.qn_id.id == qst.id %}
                   <a href="{% url 'q_result' pp=qst.pk %}">您已作答 </a>
                   
                    
                   {% endif %}
                 {% endfor %}</td>
 
-                {% if qst.ifstored == 'not' %}
+                {% if qst.if_stored == 'not' %}
                 <td>尚未<a href="{% url 'qstore' pp=qst.pk %}">发布为问卷 </a></td>
                 <td><a href="{% url 'preview' pp=qst.pk %}">预览草稿 </a></td>
                 
@@ -59,7 +59,7 @@
             <h1>no files</h1>
         {% endif %}
         </div>
-    <p><a href="{% url 'upfiles' %}">create new questionare</a></p>
+    <p><a href="{% url 'upfiles' %}">上传新问卷</a></p>
      
      </div>
 {% endblock %}
