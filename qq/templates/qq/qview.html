@@ -37,8 +37,8 @@
  
             </tbody>
           </table>
-      
-<input type="reset" value="全部重填"/> <input type="submit" value="提交"/>
+{% if alreadytaken == 'yes' %}  您已经作答,   <a href="{% url 'q_result' pp=qn.pk %}">查看作答记录 </a> {% else %}
+<input type="reset" value="全部重填"/> <input type="submit" value="提交"/>  {% endif %}
 </form>
 <a href="javascript:history.go(-1)"> 返回</a>
   

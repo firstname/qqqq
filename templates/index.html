@@ -5,33 +5,55 @@
 {% block content %}
 
 
-<!-- if stu.同学 -->
-  {% if perms.accounts.is_student %}
-    <p><h3>最新动态</h3></p>
-    <div class="well">
-      <p>***完成了<a href="{% url 'qlist' %}">抑郁自评量表</a></p>
-      <p>***更新了<a href="{% url 'qlist' %}">个人档案</a></p>
-     </div>
-
+<!-- if 用户未登录 -->
+ {% if not user.is_active  %}  
+        <p>请先<a href="{% url 'login' %}">登录</a>或者<a href="{% url 'register' %}">注册</a> 
+        </p>
   {% endif %}
-<!-- if tea.老师 -->
-  {% if perms.accounts.is_teacher %}
-    <p><h3>最新动态</h3></p>
-    <div class="well">
-
-      <p>***老师发布了<a href="{% url 'qlist' %}">抑郁筛查</a>任务</p>
-      <p>***老师发表了<a href="{% url 'qlist' %}">如何摆脱考试焦虑</a></p>
-      <p>***同学完成了<a href="{% url 'qlist' %}">抑郁自评量表</a></p>
-      <p>***同学更新了<a href="{% url 'qlist' %}">个人档案</a></p>
-      <p>***同学完成了咨询<a href="{% url 'qlist' %}">查看</a></p>
+    <p><h3>最新数据</h3></p>
+    <div class="well">    
 
      
-      <p><a href="{% url 'qlist' %}">入学测试</a>任务完成了65%</p>
-      <p><a href="{% url 'qlist' %}">抑郁筛查</a>任务完成了95%</p>
+      <p>共完成了测试{{qnrss.count}}人次</p>
+      <p><a href="{% url 'qlist' %}">共有量表{{qnss.count}}份</a></p>
+      <p>共有任务20次</p>
+      <p>共有个人档案1288份</p>
       
-      <p><a href="{% url 'qlist' %}">抑郁自评量表</a>完成了6588人次</p>
-      <p><a href="{% url 'qlist' %}">个人档案</a>共1288份</p></div>
+      <p>共有用户{{users.count}}人(包括管理员){% if perms.is_superuser %}<a href="{% url 'userlist' %}">查看</a>{% endif %}
+      ,其中教师{{teas.count}}人{% if perms.is_superuser %}查看{% endif %}
+      ,学生{{stus.count}}人{% if perms.accounts.is_teacher %}<a href="{% url 'stulist' %}">查看</a>{% endif %}</p>
+    
+    </div>
 
+<!-- if tea.老师 -->
+  {% if perms.accounts.is_teacher %}
+  
+    <p><h3>最新作答</h3></p>
+    <div class="well">
+    {% for qnr in qnrs%}
+      {% if forloop.counter < 6 %}
+      <p>{{qnr.taker_name}}于{{qnr.taken_time}}完成了<a href="{% url 'qview' pp=qnr.qn_id.pk %}">{{qnr.qn_name}}</a></p>
+      {% endif %}
+    {% endfor %}
+    </div>
+    <p><h3>最新问卷</h3></p>
+    <div class="well">
+      {% for qn in qns%}
+      <p>{{qn.creater}}于{{qn.created_time}}创建了<a href="{% url 'qview' pp=qn.pk %}">{{qn.title}}</a></p>
+    {% endfor %}
+    </div>
+    <p><h3>最新任务</h3></p>
+    <div class="well">
+      <p>***老师发布了<a href="{% url 'qlist' %}">抑郁筛查</a>任务</p>
+    </div>
+    <p><h3>最新档案</h3></p>
+    <div class="well">
+      <p>***更新了<a href="{% url 'qlist' %}">个人档案</a></p>
+    </div>
+    <p><h3>最新咨询</h3></p>
+    <div class="well">
+      <p>***同学完成了咨询<a href="{% url 'qlist' %}">查看</a></p>
+    </div>
 
 
   {% endif %}
