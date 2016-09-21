@@ -22,7 +22,7 @@ def home(request):
     qnss = Questionare.objects.all().order_by('-created_time')
     qns = qnss[:2]
 
-    users = User.objects.all()
+    users = UserProfile.objects.all()
     stus = UserProfile.objects.filter(usergroup='is_student')
     teas = UserProfile.objects.filter(usergroup='is_teacher')
     return render_to_response("index.html", RequestContext(request, {

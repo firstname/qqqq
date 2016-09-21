@@ -35,7 +35,8 @@
             </tr>           
             {% endfor %} 
              </tbody>
-            </table>     
+            </table>   
+         <a href="{% url 'rdelete' pp=qnr.qn_id.id %}">删除本次作答 </a>以重新作答    
   </div>
   <a href="javascript:history.go(-1)"> 返回</a>                                  
     </div>

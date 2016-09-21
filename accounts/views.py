@@ -222,8 +222,13 @@ def addstu(request):
 def stulist(request):
     users = User.objects.all()
     stus = UserProfile.objects.filter(usergroup='is_student')
+    userprof = UserProfile.objects.all()
 
-    return render_to_response('accounts/stulist.html', RequestContext(request, {'users': users,'stus': stus,}))
+    return render_to_response('accounts/stulist.html', RequestContext(request, {
+        'users': users,
+        'stus': stus,
+        'userprof':userprof,
+        }))
 
 
 
@@ -356,5 +361,15 @@ def addtea(request):
             return render_to_response('accounts/addstu.html', RequestContext(request, {'form': regform,}))
 
 
+@permission_required('accounts.is_teacher', login_url="/")
+def tealist(request):
+    users = User.objects.all()
+    stus = UserProfile.objects.filter(usergroup='is_teacher')
+    userprof = UserProfile.objects.all()
 
+    return render_to_response('accounts/stulist.html', RequestContext(request, {
+        'users': users,
+        'stus': stus,
+        'userprof':userprof,
+        }))
 

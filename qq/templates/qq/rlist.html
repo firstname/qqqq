@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block guid %}  - <a href="{% url 'qlist' %}">问卷 </a>{% endblock %}
+  {% block title %} qlist {% endblock %} 
+{% block content %}
+ 
+    <div class=" well">
+        {% if qnrs %}
+            <h1>作答结果</h1>
+            <p>&nbsp;</p>
+        <div  class="alert alert-success">
+            <table class="table table-striped"> 
+                <thead>
+              <tr>
+                <th>编号</th>
+                <th>问卷名称</th>
+                <th>作答者</th>
+                <th>作答时间</th>
+                <th></th>
+
+                </tr>
+           </thead>
+            <tbody>
+            {% for qst in qnrs %}
+            <tr>
+               <td> {{ qst.pk }}</td>
+               <td> {{ qst.qn_name }}</td>
+               <td> {{ qst.taker_id.username }}</td>
+               <td> {{ qst.taken_time }}</td>
+               <!-- <td>filename: {{ qst.filename }}</td>
+               <td>topic: {{ qst.topic }}</td>
+            </tr>
+            <tr> -->
+
+                <td>{% for rec in isrecord %}
+                  {% if rec.qn_id.id == qst.qn_id.id and rec.taker_id.id == qst.taker_id.id %}
+                  <a href="{% url 'q_result' pp=qst.qn_id.id %}">您已作答 </a>
+                  <a href="{% url 'rdelete' pp=qst.qn_id.id %}">删除作答 </a>
+                  {% endif %}
+                  
+                {% endfor %}</td>
+
+
+                
+            </tr>
+            {% endfor %} 
+            </tbody>
+            </table>
+        {% else %}
+            <h1>no files</h1>
+        {% endif %}
+        </div>
+
+     
+     </div>
+{% endblock %}

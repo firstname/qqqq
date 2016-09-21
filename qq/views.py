@@ -39,6 +39,7 @@ def tlist(request):
     return render_to_response('qq/tlist.html', RequestContext(request, {'alltsks':alltasks,
         'createdtasks':createdtasks }))
 
+
 @permission_required('accounts.is_teacher', login_url="/")
 def qlist(request):
     user = request.user
@@ -394,6 +395,31 @@ def q_result(request,pp):
             }))
 
 
+
+@permission_required('accounts.is_teacher', login_url="/")
+def rlist(request):
+    user = request.user
+    qnrs = QnRecord.objects.all().order_by('-taken_time')
+
+    #检查是否已经存在该人的作答记录
+
+    isrecord = QnRecord.objects.filter(taker_id_id=user.id)
+  
+    return render_to_response('qq/rlist.html', RequestContext(request, {
+        'qnrs':qnrs,
+        'isrecord':isrecord,
+         }))
+@login_required
+def rdelete(request,pp):
+    generate_user = request.user.username
+    #用户合法
+    user = User.objects.get(username__exact= generate_user)
+    if user is not None and user.is_active:
+        rs = QnRecord.objects.filter(qn_id_id=pp)
+        for r in rs:
+            r.delete()
+        # thefile.save()
+        return render_to_response('qq/message.html', RequestContext(request, {'words':'删除成功','urlname':'rlist'}))
 
 
 

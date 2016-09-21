@@ -54,26 +54,38 @@
         <ul class="nav navbar-nav">          
             <li class="active"><!-- <a href="/">Home</a> --></li>
             {% block navbar %} {% endblock %}
+                    
             {% if perms.accounts.is_student and not user.is_staff%}
-                <li><a href="{% url 'tlist' %}">my task</a></li>
+                <li><a href="{% url 'rlist' %}">profile</a></li>
+                <li><a href="{% url 'qlist' %}">test</a></li>
+                
             {% endif %}
             {% if perms.accounts.is_teacher %}
                     <li class="dropdown">
-                      <a href="/#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">task <span class="caret"></span></a>
+                      <a href="/#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">profile <span class="caret"></span></a>
                       <ul class="dropdown-menu">
-                        <li><a href="{% url 'tlist' %}">mine tasks</a></li>
-                        <li><a href="{% url 'tlist' %}">create new task</a></li>
-                        <li><a href="{% url 'tlist' %}">all tasks</a></li>
+                        <li><a href="{% url 'userlist' %}">all profiles</a></li>
+                        <li><a href="{% url 'rlist' %}">all test results</a></li>
                       </ul>
                     </li>
 
                     <li class="dropdown">
                       <a href="/#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">questionare <span class="caret"></span></a>
                       <ul class="dropdown-menu">
-                        <li><a href="{% url 'upfiles' %}">create new questionare</a></li>
                         <li><a href="{% url 'qlist' %}">all questionare</a></li>
+                        <li><a href="{% url 'upfiles' %}">create new questionare</a></li>
                       </ul>
                     </li>
+
+                    <li class="dropdown">
+                      <a href="/#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">relaxing <span class="caret"></span></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="{% url 'rlist' %}">music</a></li>
+                        <li><a href="{% url 'rlist' %}">reading</a></li>
+                        <li><a href="{% url 'rlist' %}">game</a></li>
+                      </ul>
+                    </li>
+
 
                     <li class="dropdown">
                       <a href="/#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">user <span class="caret"></span></a>
@@ -82,13 +94,14 @@
                         <li><a href="{% url 'userlist' %}">all users</a></li>
                         <li role="separator" class="divider"></li>
                         <li class="dropdown-header">teacher</li>
+                        <li><a href="{% url 'tealist' %}">all teachers</a></li>
                         <li><a href="{% url 'addtea' %}">add one new teacher</a></li>
                         {% endif %}
                         <li role="separator" class="divider"></li>
                         <li class="dropdown-header">student</li>
+                        <li><a href="{% url 'stulist' %}">all students</a></li>
                         <li><a href="{% url 'addstu' %}">add one new student</a></li>
                         <li><a href="{% url 'impstu' %}">import many new students</a></li>
-                        <li><a href="{% url 'stulist' %}">all students</a></li>
                       </ul>
                     </li>
             {% endif %}
@@ -101,7 +114,7 @@
                 <li><a href="{% url 'changepassword' %}">修改密码</a></li>
                 <li><a href="{% url 'logout' %}">退出</a></li>
                 <li role="separator" class="divider"></li>
-                <li class="dropdown-header">您的用户角色是:
+                <li class="dropdown-header">您的角色是:
                     {% if user.is_active and user.is_superuser %} 超级用户
                     {% else %}
                         {% if user.is_active and user.is_staff %} 管理员

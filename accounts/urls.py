@@ -14,6 +14,7 @@ urlpatterns = [
     url(r'userlist/$', 'accounts.views.userlist', name='userlist'),
     url(r'addstu/$', 'accounts.views.addstu', name='addstu'),
     url(r'addtea/$', 'accounts.views.addtea', name='addtea'),
+    url(r'tealist/$', 'accounts.views.tealist', name='tealist'),
     url(r'stulist/$', 'accounts.views.stulist', name='stulist'),
     url(r'impstu/$', 'accounts.views.impstu', name='impstu'),
 ]

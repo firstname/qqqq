@@ -15,5 +15,6 @@ urlpatterns = [
     url(r'qdelete/(?P<pp>[0-9]+)/$', 'qq.views.qdelete', name='qdelete'),
     url(r'q_submit/(?P<pp>[0-9]+)/$', 'qq.views.q_submit', name='q_submit'),
     url(r'q_result/(?P<pp>[0-9]+)/$', 'qq.views.q_result', name='q_result'),
-    url(r'tlist/$', 'qq.views.tlist', name='tlist'),
+    url(r'rlist/$', 'qq.views.rlist', name='rlist'),
+    url(r'rdelete/(?P<pp>[0-9]+)/$', 'qq.views.rdelete', name='rdelete'),
 ]

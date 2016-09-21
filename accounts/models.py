@@ -7,7 +7,7 @@ import hashlib
 #扩展用户信息          
 class UserProfile(models.Model):  
     user=models.OneToOneField(User,unique=True,verbose_name=('自定义用户'))#和User关联  
-    phone=models.CharField(u'电话号码',max_length=20)#电话号码
+    phone=models.CharField(u'电话号码',max_length=20,blank=True,null=True)#电话号码
     usergroup=models.CharField(u'"老师"或"学生"',max_length=20,blank=True,null=True,default='is_student')#是学生还是老师 
     gradename = models.CharField(u'年级',max_length=30,blank=True,null=True)
     classname = models.CharField(u'班级',max_length=30,blank=True,null=True)

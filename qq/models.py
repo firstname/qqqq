@@ -17,7 +17,7 @@ class Questionare(models.Model):
     item_count = models.CharField(u'题目数',max_length=2000,blank=True, null=True,default = '0')
     sub_count = models.CharField(u'子维度数',max_length=2000,blank=True, null=True,default = '0')
     created_time = models.DateTimeField()
-    item_file = models.FileField(u'上传题目*',blank=False,null=True)
+    item_file = models.FileField(u'上传*',blank=False,null=True)
     file_name = models.CharField(max_length=2000,blank=True, null=True)
     file_path = models.CharField(max_length=2000,blank=True, null=True)
     topic = models.CharField(max_length=2000,blank=True, null=True)

@@ -22,16 +22,15 @@
         </div>
     {% else %}  
     <div class="well">
-        <h1>学生列表</h1>
+        <h1>用户列表</h1>
         
         <div  class="alert alert-success">
             <table class="table table-striped"> 
                 <thead>
               <tr>
-                <th>id</th>
+                <th>编号</th>
                 <th>用户名</th>
-                <th>邮件</th>
-                <th>是否有效</th>
+                <th>用户角色</th>
                 <th>创建的日期</th>
                 <th>最后一次登录的日期</th>
                 <!-- <th>管理</th>
@@ -42,7 +41,9 @@
                 <th>logentry</th>
                 <th>userprofile</th>
                 <th>用户的组</th>
-                <th>用户的权限</th> -->
+                <th>用户的权限</th>
+                <th>邮件</th>
+                <th>是否有效</th> -->
 
                 </tr>  
         </thead>
@@ -52,8 +53,17 @@
         <tr>
         <td>{{uuu.id}}</td>
         <td>{{uuu.username}}</td>
-        <td>{{user.email}}</td>
-        <td>{{uuu.is_active}}</td>
+        {% for prof in userprof %}
+                {% if uuu.id == prof.user_id %}
+                    <td>{% if prof.usergroup == 'is_teacher' %} <span class="label label-success">教师</span>
+                        {%else%}{% if prof.usergroup == 'is_student' %} <span class="label label-primary">学生</span>
+                            {%else%}<span class="label label-default">其他</span>
+                            {%endif%}
+                        {%endif%}
+                    </td>
+                    
+                {% endif %}
+        {% endfor %}
         <td>{{uuu.date_joined}}</td>
         <td>{{uuu.last_login}}</td>
         <!-- <td>{{uuu.is_staff}}</td>
@@ -64,7 +74,9 @@
         <td>{{uuu.logentry}}</td>
         <td>{{uuu.userprofile}}</td>
         <td>{{uuu.groups}}</td>
-        <td>{{uuu.user_permissions}}</td> </td> -->
+        <td>{{uuu.user_permissions}}</td>
+        <td>{{user.email}}</td>
+        <td>{{uuu.is_active}}</td>  -->
                
         </tr>
         

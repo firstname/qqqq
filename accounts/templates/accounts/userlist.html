@@ -27,15 +27,12 @@
         <table class="table table-striped"> 
                 <thead>
               <tr>
-                <th>id</th>
+                <th>编号</th>
                 <th>用户名</th>
-                <th>管理</th>
-                <th>超级</th>
-                <!-- <th>邮件</th>
+                <!-- <th>超级</th>
+                <th>邮件</th>
                 <th>是否有效</th>
                 <th>密码</th>
-                <th>创建的日期</th>
-                <th>最后一次登录的日期</th>
                 <th>姓</th>
                 <th>名</th>
                 <th>logentry</th>
@@ -43,21 +40,22 @@
                 <th>用户的组</th>
                 <th>用户的权限</th> -->
                 <th>用户角色</th>
+                <th>是否管理员</th>
+                <th>创建的日期</th>
+                <th>最后一次登录的日期</th>
 
                 </tr> 
            </thead>
             <tbody>    
         {%for uuu in users%}
+        {% if not uuu.is_superuser %}
         <tr>
         <td>{{uuu.id}}</td>
         <td>{{uuu.username}}</td>
-        <td>{% if uuu.is_staff %} 管理员 {% endif %}</td>
-        <td>{% if uuu.is_superuser %} 超级用户 {% endif %}</td>
-        <!-- <td>{{user.email}}</td>
+        <!-- <td>{% if uuu.is_superuser %} 超级用户 {% endif %}</td>
+        <td>{{user.email}}</td>
         <td>{{uuu.is_active}}</td>
         <td>{{uuu.password}}</td>
-        <td>{{uuu.date_joined}}</td>
-        <td>{{uuu.last_login}}</td>
         <td>{{uuu.first_name}}</td>
         <td>{{uuu.last_name}}</td>
         <td>{{uuu.logentry}}</td>
@@ -76,7 +74,10 @@
                     
                 {% endif %}
         {% endfor %}
-
+        <td>{% if uuu.is_staff %} 管理员 {% endif %}</td>
+        <td>{{uuu.date_joined}}</td>
+        <td>{{uuu.last_login}}</td>
+        {% endif %}
         </tr>
         
         {% endfor %} 
