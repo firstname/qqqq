@@ -27,12 +27,12 @@
                 <th>ID</th>
                 <th>question</th>
                 {% for choice in choicename%}
-                {% if choice != 'ID'%}
+                {% if choice != 'id'%}
                 <th>{{choice}}</th>
                 {% endif %}
                 {% endfor %}
                 {% for score in scorename%}
-                {% if score != 'ID'%}
+                {% if score != 'id'%}
                 <th>{{score}}</th>
                 {% endif %}
                 {% endfor %}
@@ -45,7 +45,7 @@
                 <td>{{v}}</td>   -->         
                 
                 {% for v0,v1 in v.items %}
-                    {% if v0 == 'ID' %} 
+                    {% if v0 == 'id' %} 
                  <!-- <td>{{v0}}</td> -->
                   <td>{{v1}}</td> 
                     {% endif %}  

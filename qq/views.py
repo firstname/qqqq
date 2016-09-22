@@ -22,38 +22,8 @@ from .forms import *
 # def home(request):
 #     return render_to_response("qq/qindex.html", RequestContext(request, { }))
 
-@login_required
-def tlist(request):
-    username = request.user.username
-    operater = User.objects.get(username=username)
-    if operater.has_perm('accounts.is_teacher',):#只有teacher有查看全部task的权限
-        alltasks = QnTask.objects.all().filter(createdtime__lte=timezone.now()).order_by('-createdtime')#连字符“-”在“created_date”前表示降序排列。
-        createdtasks = QnTask.objects.all().filter(creater=username)#个人所创建的task
-    #学生被指派的task
-    #由个人username获取User.pk
-    #由User.pk获取Student.pk
-    #由Student.pk获取Membership.pk
-    #由Membership.pk获取StuGroup.pk
-    #由StuGroup.pk获取QnTask.pk
-    orderedtask = stutasks.filter(createdtime__lte=timezone.now()).order_by('-createdtime')#连字符“-”在“created_date”前表示降序排列。 
-    return render_to_response('qq/tlist.html', RequestContext(request, {'alltsks':alltasks,
-        'createdtasks':createdtasks }))
 
 
-@permission_required('accounts.is_teacher', login_url="/")
-def qlist(request):
-    user = request.user
-    qns = Questionare.objects.all().order_by('-created_time')
-    qn = qns.filter(created_time__lte=timezone.now()).order_by('-created_time')#连字符“-”在“created_date”前表示降序排列。
-
-    #检查是否已经存在该人的作答记录
-
-    isrecord = QnRecord.objects.filter(taker_id_id=user.id)
-  
-    return render_to_response('qq/qlist.html', RequestContext(request, {
-        'qns':qns,
-        'isrecord':isrecord,
-         }))
 
 @permission_required('accounts.is_teacher', login_url="/")
 def upfiles(request):
@@ -63,20 +33,31 @@ def upfiles(request):
         return render_to_response('qq/upfiles.html', RequestContext(request, {'form': iform,}))
     #已经post提交数据
     else:
-        iform = QForm(request.POST,request.FILES)
+        iform = QForm(request.POST,request.FILES)#从表单获取数据
         if iform.is_valid():
             creater = request.user.username
-            title = request.POST.get('title', '')
-            desc = request.POST.get('desc', '')
-            guidance = request.POST.get('guidance', '')
-            itemcount = request.POST.get('item_count', '')
-            subcount = request.POST.get('sub_count', '')
+            # title = request.POST.get('title', '')
+            # shortname = request.POST.get('short_name', '')
+            # labels = request.POST.get('labels', '')
+            # desc = request.POST.get('desc', '')
+            # guidance = request.POST.get('guidance', '')
+            # tips = request.POST.get('tips', '')
+            often = request.POST.get('if_often', '')
+            homepage = request.POST.get('if_homepage', '')
             createdtime = timezone.now()
             itemfile = request.FILES.get('item_file', None)
             filename = itemfile.name
             filepath = 'files/upload/' + time.strftime('%Y/%m/%d/%H/%M/%S/')
-            topic = request.POST.get('topic', '')  
-            fileformat = request.POST.get('fileformat', '')                      
+
+            df = pd.read_excel(itemfile,sheetname = 'Sheet1')#读取问卷信息信息文件
+            ind = df.index
+            title = df.at[ind[0],'title']
+            shortname = df.at[ind[0],'short_name']
+            labels = df.at[ind[0],'keyword']
+            desc = df.at[ind[0],'introduce']
+            guidance = df.at[ind[0],'guidance']
+            tips = df.at[ind[0],'tips']
+                    
 
             #检查用户合法性
             user = User.objects.get(username__exact= creater)
@@ -91,16 +72,17 @@ def upfiles(request):
                     infile = Questionare()
                     infile.creater = user
                     infile.title = title
+                    infile.short_name = shortname
+                    infile.labels = labels 
                     infile.desc = desc
                     infile.guidance = guidance
-                    infile.item_count = itemcount 
-                    infile.sub_count = subcount 
+                    infile.tips = tips 
+                    infile.if_often = often
+                    infile.if_homepage = homepage  
                     infile.created_time = createdtime 
                     #infile.item_file = itemfile #会将文件保存在根目录下
                     infile.file_path = filepath    
-                    infile.file_name = filename
-                    infile.topic = topic
-                    infile.file_format = fileformat    
+                    infile.file_name = filename   
                     infile.save()          
                     return render_to_response('qq/message.html', RequestContext(request, {'words':'上传成功!','urlname':'qlist'}))
                 else:
@@ -125,7 +107,7 @@ def qstore(request,pp):
     thefile = get_object_or_404(Questionare, pk=pp)
     title = thefile.title
 
-    df = pd.read_excel(str(thefile.file_path)+str(thefile.file_name))
+    df = pd.read_excel(str(thefile.file_path)+str(thefile.file_name),sheetname = 'Sheet2')#读取问题详细信息文件
     ind = df.index
     rows = len(df.index)
     columns = df.columns
@@ -134,15 +116,15 @@ def qstore(request,pp):
 
     if thefile.if_stored == 'not':
         for row in range(rows):
-            infile = Question()
+            infile = Question()#保存每一道问题
             infile.qn_id = thefile #outkey of 'Question', must be a 'Question' instance
             infile.qn_name = thefile.title
-            infile.q_order = df.at[ind[row],'ID']
+            infile.q_order = df.at[ind[row],'id']
             infile.q_name = df.at[ind[row],'question']
-            infile.group = df.at[ind[row],'group']
+            infile.g_name = df.at[ind[row],'group']
             infile.save()
             for choice in range(choices):
-                inf = Option()
+                inf = Option()#保存每一条选项
                 inf.q_id = infile
                 inf.q_name = infile.q_name
                 inf.qn_id = infile.qn_id
@@ -157,7 +139,7 @@ def qstore(request,pp):
         thefile.if_stored = 'yes'
         thefile.save()
         return render_to_response('qq/message.html', RequestContext(request, {'words':'发布问卷成功','urlname':'qlist'}))
-    return render_to_response('qq/message.html', RequestContext(request, {'words':'该问卷已经发布过,如果要修改,请重新上出修改后的文件','urlname':'qlist'}))
+    return render_to_response('qq/message.html', RequestContext(request, {'words':'该问卷已经发布过','urlname':'qlist'}))
 
 
                
@@ -169,20 +151,20 @@ def preview(request,pp):
     user = User.objects.get(username__exact= generate_user)
     if user is not None and user.is_active:
         thefile = get_object_or_404(Questionare, pk=pp)
-        fileread = pd.read_excel(str(thefile.file_path)+str(thefile.file_name))
+        fileread = pd.read_excel(str(thefile.file_path)+str(thefile.file_name),sheetname = 'Sheet2')
         filecolumn = fileread.columns
-        question = fileread.loc[:,['ID','question']]
+        question = fileread.loc[:,['id','question']]
 
         
         choicename = re.findall(r'choice+.',str(filecolumn))
-        choicename.insert(0,'ID')
+        choicename.insert(0,'id')
         choice = fileread.loc[:,choicename]
 
         scorename = re.findall(r'score+.',str(filecolumn))
-        scorename.insert(0,'ID')
+        scorename.insert(0,'id')
         score = fileread.loc[:,scorename]
 
-        chsc = pd.merge(choice,score,on='ID')
+        chsc = pd.merge(choice,score,on='id')
 
         filet = fileread.T
         questiont = question.T
@@ -207,6 +189,23 @@ def preview(request,pp):
 
             'chsc': chsc,
             }))
+
+
+
+@permission_required('accounts.is_teacher', login_url="/")
+def qlist(request):
+    user = request.user
+    qns = Questionare.objects.all().order_by('-created_time')
+    qn = qns.filter(created_time__lte=timezone.now()).order_by('-created_time')#连字符“-”在“created_date”前表示降序排列。
+
+    #检查是否已经存在该人的作答记录
+
+    isrecord = QnRecord.objects.filter(taker_id_id=user.id)
+  
+    return render_to_response('qq/qlist.html', RequestContext(request, {
+        'qns':qns,
+        'isrecord':isrecord,
+         }))
 
 @login_required
 def qview(request,pp):

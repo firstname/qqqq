@@ -12,23 +12,24 @@ class Questionare(models.Model):
     # id = models.AutoField(primary_key=True)
     creater = models.ForeignKey(User)
     title = models.CharField(u'问卷名称*（唯一，不可更改）',max_length=2000,blank=False, null=True,)
+    short_name = models.CharField(u'简称',max_length=2000,blank=True, null=True)
+    labels = models.CharField(u'关键词',max_length=2000,blank=True, null=True)
     desc = models.TextField(u'简介',max_length=2000,blank=True, null=True)
     guidance = models.TextField(u'指导语',max_length=2000,blank=True, null=True)
-    item_count = models.CharField(u'题目数',max_length=2000,blank=True, null=True,default = '0')
-    sub_count = models.CharField(u'子维度数',max_length=2000,blank=True, null=True,default = '0')
+    tips = models.CharField(u'备注',max_length=2000,blank=True, null=True)
+    if_often = models.BooleanField(u'设置为常用问卷',blank=True,)
+    if_homepage = models.BooleanField(u'放在首页推荐',blank=True,)
     created_time = models.DateTimeField()
-    item_file = models.FileField(u'上传问卷*（当前仅支持excel格式，模板请在下方下载）',blank=False,null=True)
+    item_file = models.FileField(u'*（模板请在下方下载）',blank=False,null=True)
     file_name = models.CharField(max_length=2000,blank=True, null=True)
     file_path = models.CharField(max_length=2000,blank=True, null=True)
-    topic = models.CharField(max_length=2000,blank=True, null=True)
-    file_format = models.CharField(max_length=2000,blank=True, null=True)
     if_stored = models.CharField(max_length=2000,blank=True, null=True,default = 'not')
     if_in_use = models.CharField(max_length=2000,blank=True, null=True,default = 'not')
     def __unicode__(self):
         return str(self.id)
 class QnTrans(models.Model):
     # id = models.AutoField(primary_key=True)
-    q_t_order = models.CharField(max_length=2000,blank=True, null=True)# 分数转换规则序号
+    qn_t_order = models.CharField(max_length=2000,blank=True, null=True)# 分数转换规则序号
     score = models.CharField(max_length=2000,blank=True, null=True)#转换前分数
     score_transed = models.CharField(max_length=2000,blank=True, null=True)#转换后分数
     qn_id = models.ForeignKey(Questionare)#大哥是问卷Questionare
@@ -37,7 +38,7 @@ class QnTrans(models.Model):
         return str(self.id)
 class QnInterpret(models.Model):
     # id = models.AutoField(primary_key=True)
-    q_i_order = models.CharField(max_length=2000,blank=True, null=True)# 维度解释规则序号
+    qn_i_order = models.CharField(max_length=2000,blank=True, null=True)# 维度解释规则序号
     up_limit = models.CharField(max_length=2000,blank=True, null=True,default = '0') #上限值
     low_limit = models.CharField(max_length=2000,blank=True, null=True,default = '0') #下限值
     qn_inter = models.CharField(max_length=2000,blank=True, null=True)#解释语句
@@ -70,7 +71,7 @@ class GpInterpret(models.Model):
     g_i_order = models.CharField(max_length=2000,blank=True, null=True)# 维度解释规则序号
     up_limit = models.CharField(max_length=2000,blank=True, null=True,default = '0') #上限值
     low_limit = models.CharField(max_length=2000,blank=True, null=True,default = '0') #下限值
-    gr_inter = models.CharField(max_length=2000,blank=True, null=True)#解释语句
+    g_inter = models.CharField(max_length=2000,blank=True, null=True)#解释语句
     qn_id = models.ForeignKey(Questionare)#大哥是问卷Questionare
     qn_name = models.CharField(max_length=2000,blank=True, null=True)   
     def __unicode__(self):
@@ -98,7 +99,7 @@ class QnRecord(models.Model):
     qn_name = models.CharField(max_length=2000,blank=True, null=True)
     score = models.CharField(max_length=2000,blank=True, null=True)#转换前分数
     score_transed = models.CharField(max_length=2000,blank=True, null=True)#转换后分数
-    interpretation = models.CharField(max_length=2000,blank=True, null=True)#解释语句
+    interp = models.CharField(max_length=2000,blank=True, null=True)#解释语句
     def __unicode__(self):
         return str(self.id)
 

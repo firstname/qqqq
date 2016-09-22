@@ -10,24 +10,29 @@
         <p>请先<a href="{% url 'login' %}">登录</a>或者<a href="{% url 'register' %}">注册</a> 
         </p>
   {% endif %}
-    <p><h3>最新数据</h3></p>
-    <div class="well">    
 
-      <p>共有个人档案1288份</p>
-      <p>共完成了测试{{qnrss.count}}人次{% if user.is_staff %}<a href="{% url 'rlist' %}">查看</a>{% endif %}</p>
-      <p>共有量表{{qnss.count}}份{% if user.is_staff %}<a href="{% url 'qlist' %}">查看</a>{% endif %}</p>
-      <p>共有活动20次</p>
-      
-      
-      <p>共有用户{{users.count}}人{% if user.is_staff %}<a href="{% url 'userlist' %}">查看</a>{% endif %}
-      ,其中教师{{teas.count}}人{% if user.is_staff %}<a href="{% url 'tealist' %}">查看</a>{% endif %}
-      ,学生{{stus.count}}人{% if perms.accounts.is_teacher %}<a href="{% url 'stulist' %}">查看</a>{% endif %}</p>
-    
+<!-- if 学生 -->
+    <p><h3>常用量表</h3></p>
+    <div class="well">
+    {% for qn in qns%}
+      <p><a href="{% url 'qview' pp=qn.pk %}">{{qn.title}}</a></p>
+    {% endfor %}
     </div>
 
 <!-- if tea.老师 -->
   {% if perms.accounts.is_teacher %}
   
+    <p><h3>重点关注</h3></p>
+    <div class="well">
+  
+    {% for qnr in qnrs%}
+      {% if forloop.counter < 6 %}
+      <p>{{qnr.taker_name}}于{{qnr.taken_time}}完成了<a href="{% url 'qview' pp=qnr.qn_id.pk %}">{{qnr.qn_name}}</a>,结果异常</p>
+      {% endif %}
+    {% endfor %}
+    </div>
+
+
     <p><h3>最新档案</h3></p>
     <div class="well">
       <p>***更新了"个人档案"<a href="{% url 'qlist' %}">查看</a></p>
@@ -56,6 +61,23 @@
 
 
   {% endif %}
+
+      <p><h3>最新数据</h3></p>
+    <div class="well">    
+
+      <p>共有个人档案1288份</p>
+      <p>共完成了测试{{qnrss.count}}人次{% if user.is_staff %}<a href="{% url 'rlist' %}">查看</a>{% endif %}</p>
+      <p>共有量表{{qnss.count}}份{% if user.is_staff %}<a href="{% url 'qlist' %}">查看</a>{% endif %}</p>
+      <p>共有活动20次</p>
+      
+      
+      <p>共有用户{{users.count}}人{% if user.is_staff %}<a href="{% url 'userlist' %}">查看</a>{% endif %}
+      ,其中教师{{teas.count}}人{% if user.is_staff %}<a href="{% url 'tealist' %}">查看</a>{% endif %}
+      ,学生{{stus.count}}人{% if perms.accounts.is_teacher %}<a href="{% url 'stulist' %}">查看</a>{% endif %}</p>
+    
+    </div>
+
+    
 
   {% endblock %} 
 
