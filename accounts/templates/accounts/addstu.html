@@ -13,7 +13,16 @@
 <!-- 注册表单开始 -->
         <form class="alert alert-success" action="" method="post">
             {% csrf_token %}
-            {{ form.as_p }}
+            <!-- {{ form.as_p }} -->   
+            <table class=""> 
+            {% for field in form %} 
+                <tr>
+                <td>{{ field.label_tag }}</td> <td>{{ field }} </td><td>{{ field.errors }}</td>
+                </tr>
+                <tr><td> &nbsp &nbsp </td></tr>
+            {% endfor %}   
+            </table>     
+            
             <p class="form-actions">
                 <input type="submit" value="add" class="btn btn-primary">
              

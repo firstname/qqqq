@@ -422,6 +422,27 @@ def rdelete(request,pp):
         return render_to_response('qq/message.html', RequestContext(request, {'words':'删除成功','urlname':'rlist'}))
 
 
-
+@login_required
+def downtemplate(request,pp):
+    generate_user = request.user.username
+    #用户合法
+    user = User.objects.get(username__exact= generate_user)
+    filename =  pp #超链接传递过来的文件名字
+    if user is not None and user.is_active:        
+        fpath = './examples/'+str( filename )+'.xls' #文件在根目录下的examples目录下，且名字就是超链接传递过来
+        fname = str( filename)+'.xls'
+        def readFile(fn, buf_size=262144):
+            f = open(fn, "rb")
+            while True:
+                c = f.read(buf_size)
+                if c:
+                    yield c
+                else:
+                    break
+            f.close()
+        data = readFile(fpath)
+        response = HttpResponse(data,content_type='application/octet-stream') 
+        response['Content-Disposition'] = 'attachment; filename=%s' % fname
+        return response
 
 

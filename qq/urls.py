@@ -17,4 +17,5 @@ urlpatterns = [
     url(r'q_result/(?P<pp>[0-9]+)/$', 'qq.views.q_result', name='q_result'),
     url(r'rlist/$', 'qq.views.rlist', name='rlist'),
     url(r'rdelete/(?P<pp>[0-9]+)/$', 'qq.views.rdelete', name='rdelete'),
+    #url(r'download/(?P<pp>[A-Za-z]+)/$', 'qq.views.downtemplate', name='downtemplate'),#account里面已经有了这一条了
 ]

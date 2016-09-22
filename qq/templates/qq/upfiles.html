@@ -11,9 +11,19 @@
             <p>&nbsp;</p>
             <form class="alert alert-success" action="" method="post" enctype="multipart/form-data" accept-charset="utf-8">
             {% csrf_token %}
-             {{ form.as_p }}
-            <p >  <input type="submit" value="上传" >      </p>
+            <!-- {{ form.as_p }} -->   
+            <table class=""> 
+            {% for field in form %} 
+                <tr>
+                <td>{{ field.label_tag }}</td> <td>{{ field }} </td><td>{{ field.errors }}</td>
+                </tr>
+                <tr><td> &nbsp &nbsp </td></tr>
+            {% endfor %}   
+            </table>     
+            
+            <p class="form-actions">  <input type="submit" value="上传" class="btn btn-primary">      </p>
             </form>
-
+            <p >  <a href="{% url 'downtemplate' pp='question' %}">下载问卷模板</a>   </p>
+            <!-- 超链接传递的文件名 -->
      </div>
 {% endblock %}

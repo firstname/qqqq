@@ -17,4 +17,5 @@ urlpatterns = [
     url(r'tealist/$', 'accounts.views.tealist', name='tealist'),
     url(r'stulist/$', 'accounts.views.stulist', name='stulist'),
     url(r'impstu/$', 'accounts.views.impstu', name='impstu'),
+    url(r'download/(?P<pp>[A-Za-z]+)/$', 'qq.views.downtemplate', name='downtemplate'),
 ]

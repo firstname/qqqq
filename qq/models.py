@@ -11,13 +11,13 @@ import hashlib
 class Questionare(models.Model):
     # id = models.AutoField(primary_key=True)
     creater = models.ForeignKey(User)
-    title = models.CharField(u'名称*',max_length=2000,blank=False, null=True,)
+    title = models.CharField(u'问卷名称*（唯一，不可更改）',max_length=2000,blank=False, null=True,)
     desc = models.TextField(u'简介',max_length=2000,blank=True, null=True)
     guidance = models.TextField(u'指导语',max_length=2000,blank=True, null=True)
     item_count = models.CharField(u'题目数',max_length=2000,blank=True, null=True,default = '0')
     sub_count = models.CharField(u'子维度数',max_length=2000,blank=True, null=True,default = '0')
     created_time = models.DateTimeField()
-    item_file = models.FileField(u'上传*',blank=False,null=True)
+    item_file = models.FileField(u'上传问卷*（当前仅支持excel格式，模板请在下方下载）',blank=False,null=True)
     file_name = models.CharField(max_length=2000,blank=True, null=True)
     file_path = models.CharField(max_length=2000,blank=True, null=True)
     topic = models.CharField(max_length=2000,blank=True, null=True)
@@ -26,11 +26,51 @@ class Questionare(models.Model):
     if_in_use = models.CharField(max_length=2000,blank=True, null=True,default = 'not')
     def __unicode__(self):
         return str(self.id)
+class QnTrans(models.Model):
+    # id = models.AutoField(primary_key=True)
+    q_t_order = models.CharField(max_length=2000,blank=True, null=True)# 分数转换规则序号
+    score = models.CharField(max_length=2000,blank=True, null=True)#转换前分数
+    score_transed = models.CharField(max_length=2000,blank=True, null=True)#转换后分数
+    qn_id = models.ForeignKey(Questionare)#大哥是问卷Questionare
+    qn_name = models.CharField(max_length=2000,blank=True, null=True)   
+    def __unicode__(self):
+        return str(self.id)
+class QnInterpret(models.Model):
+    # id = models.AutoField(primary_key=True)
+    q_i_order = models.CharField(max_length=2000,blank=True, null=True)# 维度解释规则序号
+    up_limit = models.CharField(max_length=2000,blank=True, null=True,default = '0') #上限值
+    low_limit = models.CharField(max_length=2000,blank=True, null=True,default = '0') #下限值
+    qn_inter = models.CharField(max_length=2000,blank=True, null=True)#解释语句
+    qn_id = models.ForeignKey(Questionare)#大哥是问卷Questionare
+    qn_name = models.CharField(max_length=2000,blank=True, null=True)   
+    def __unicode__(self):
+        return str(self.id)
 class Question(models.Model):
     # id = models.AutoField(primary_key=True)
     q_order = models.CharField(max_length=2000,blank=True, null=True)# 在问卷内的题目序号
     q_name = models.CharField(max_length=2000,blank=True, null=True) 
-    group = models.CharField(max_length=2000,blank=True, null=True) 
+    g_name = models.CharField(max_length=2000,blank=True, null=True) #属于哪个子维度
+    qn_id = models.ForeignKey(Questionare)#大哥是问卷Questionare
+    qn_name = models.CharField(max_length=2000,blank=True, null=True)   
+    def __unicode__(self):
+        return str(self.id)
+class GpTrans(models.Model):
+    # id = models.AutoField(primary_key=True)
+    g_name = models.CharField(max_length=2000,blank=True, null=True) 
+    g_t_order = models.CharField(max_length=2000,blank=True, null=True)# 分数转换规则序号
+    score = models.CharField(max_length=2000,blank=True, null=True)#转换前分数
+    score_transed = models.CharField(max_length=2000,blank=True, null=True)#转换后分数
+    qn_id = models.ForeignKey(Questionare)#大哥是问卷Questionare
+    qn_name = models.CharField(max_length=2000,blank=True, null=True)   
+    def __unicode__(self):
+        return str(self.id)
+class GpInterpret(models.Model):
+    # id = models.AutoField(primary_key=True)
+    g_name = models.CharField(max_length=2000,blank=True, null=True)
+    g_i_order = models.CharField(max_length=2000,blank=True, null=True)# 维度解释规则序号
+    up_limit = models.CharField(max_length=2000,blank=True, null=True,default = '0') #上限值
+    low_limit = models.CharField(max_length=2000,blank=True, null=True,default = '0') #下限值
+    gr_inter = models.CharField(max_length=2000,blank=True, null=True)#解释语句
     qn_id = models.ForeignKey(Questionare)#大哥是问卷Questionare
     qn_name = models.CharField(max_length=2000,blank=True, null=True)   
     def __unicode__(self):
@@ -38,8 +78,8 @@ class Question(models.Model):
 class Option(models.Model):
     # id = models.AutoField(primary_key=True)
     o_order = models.CharField(max_length=2000,blank=True, null=True)# 在题目内的序号
-    o_name = models.CharField(max_length=2000,blank=True, null=True)
-    o_value = models.CharField(max_length=2000,blank=True, null=True) 
+    o_name = models.CharField(max_length=2000,blank=True, null=True)#选项内容
+    o_value = models.CharField(max_length=2000,blank=True, null=True)#选项计分 
     q_id = models.ForeignKey(Question)#大哥是问题Question
     q_name = models.CharField(max_length=2000,blank=True, null=True)   
     qn_id = models.ForeignKey(Questionare)#大哥的大哥是问卷Questionare
@@ -56,9 +96,20 @@ class QnRecord(models.Model):
     #taskid = models.ForeignKey(QnTask)#任务
     qn_id = models.ForeignKey(Questionare)
     qn_name = models.CharField(max_length=2000,blank=True, null=True)
-    qn_score = models.CharField(max_length=2000,blank=True, null=True,default = '')#问卷得分
+    score = models.CharField(max_length=2000,blank=True, null=True)#转换前分数
+    score_transed = models.CharField(max_length=2000,blank=True, null=True)#转换后分数
+    interpretation = models.CharField(max_length=2000,blank=True, null=True)#解释语句
     def __unicode__(self):
         return str(self.id)
+
+class GResult(models.Model):
+    # id = models.AutoField(primary_key=True)#每个维度记录一条    
+    g_name = models.CharField(max_length=2000,blank=True, null=True)
+    score = models.CharField(max_length=2000,blank=True, null=True)#转换前分数
+    score_transed = models.CharField(max_length=2000,blank=True, null=True)#转换后分数  
+    g_inter = models.CharField(max_length=2000,blank=True, null=True)#解释语句 
+    qn_id = models.ForeignKey(Questionare)#大哥是问卷Questionare
+    qn_name = models.CharField(max_length=2000,blank=True, null=True)#大哥
 
 class QResult(models.Model):
     # id = models.AutoField(primary_key=True)#每个选项记录一条
@@ -67,7 +118,8 @@ class QResult(models.Model):
     o_value = models.CharField(max_length=2000,blank=True, null=True) 
     q_id = models.ForeignKey(Question)#大哥是问题Question
     q_order = models.CharField(max_length=2000,blank=True, null=True)  
-    q_name = models.CharField(max_length=2000,blank=True, null=True)   
+    q_name = models.CharField(max_length=2000,blank=True, null=True) 
+    g_name = models.CharField(max_length=2000,blank=True, null=True)#大哥维度名称  
     qn_id = models.ForeignKey(Questionare)#大哥的大哥是问卷Questionare
     qn_name = models.CharField(max_length=2000,blank=True, null=True)#大哥的大哥
 
