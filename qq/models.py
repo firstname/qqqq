@@ -27,51 +27,11 @@ class Questionare(models.Model):
     if_in_use = models.CharField(max_length=2000,blank=True, null=True,default = 'not')
     def __unicode__(self):
         return str(self.id)
-class QnTrans(models.Model):
-    # id = models.AutoField(primary_key=True)
-    qn_t_order = models.CharField(max_length=2000,blank=True, null=True)# 分数转换规则序号
-    score = models.CharField(max_length=2000,blank=True, null=True)#转换前分数
-    score_transed = models.CharField(max_length=2000,blank=True, null=True)#转换后分数
-    qn_id = models.ForeignKey(Questionare)#大哥是问卷Questionare
-    qn_name = models.CharField(max_length=2000,blank=True, null=True)   
-    def __unicode__(self):
-        return str(self.id)
-class QnInterpret(models.Model):
-    # id = models.AutoField(primary_key=True)
-    qn_i_order = models.CharField(max_length=2000,blank=True, null=True)# 维度解释规则序号
-    up_limit = models.CharField(max_length=2000,blank=True, null=True,default = '0') #上限值
-    low_limit = models.CharField(max_length=2000,blank=True, null=True,default = '0') #下限值
-    qn_inter = models.CharField(max_length=2000,blank=True, null=True)#解释语句
-    qn_id = models.ForeignKey(Questionare)#大哥是问卷Questionare
-    qn_name = models.CharField(max_length=2000,blank=True, null=True)   
-    def __unicode__(self):
-        return str(self.id)
 class Question(models.Model):
     # id = models.AutoField(primary_key=True)
     q_order = models.CharField(max_length=2000,blank=True, null=True)# 在问卷内的题目序号
     q_name = models.CharField(max_length=2000,blank=True, null=True) 
-    g_name = models.CharField(max_length=2000,blank=True, null=True) #属于哪个子维度
-    qn_id = models.ForeignKey(Questionare)#大哥是问卷Questionare
-    qn_name = models.CharField(max_length=2000,blank=True, null=True)   
-    def __unicode__(self):
-        return str(self.id)
-class GpTrans(models.Model):
-    # id = models.AutoField(primary_key=True)
-    g_name = models.CharField(max_length=2000,blank=True, null=True) 
-    g_t_order = models.CharField(max_length=2000,blank=True, null=True)# 分数转换规则序号
-    score = models.CharField(max_length=2000,blank=True, null=True)#转换前分数
-    score_transed = models.CharField(max_length=2000,blank=True, null=True)#转换后分数
-    qn_id = models.ForeignKey(Questionare)#大哥是问卷Questionare
-    qn_name = models.CharField(max_length=2000,blank=True, null=True)   
-    def __unicode__(self):
-        return str(self.id)
-class GpInterpret(models.Model):
-    # id = models.AutoField(primary_key=True)
-    g_name = models.CharField(max_length=2000,blank=True, null=True)
-    g_i_order = models.CharField(max_length=2000,blank=True, null=True)# 维度解释规则序号
-    up_limit = models.CharField(max_length=2000,blank=True, null=True,default = '0') #上限值
-    low_limit = models.CharField(max_length=2000,blank=True, null=True,default = '0') #下限值
-    g_inter = models.CharField(max_length=2000,blank=True, null=True)#解释语句
+    #g_name = models.CharField(max_length=2000,blank=True, null=True) #属于哪个子维度
     qn_id = models.ForeignKey(Questionare)#大哥是问卷Questionare
     qn_name = models.CharField(max_length=2000,blank=True, null=True)   
     def __unicode__(self):
@@ -85,6 +45,77 @@ class Option(models.Model):
     q_name = models.CharField(max_length=2000,blank=True, null=True)   
     qn_id = models.ForeignKey(Questionare)#大哥的大哥是问卷Questionare
     qn_name = models.CharField(max_length=2000,blank=True, null=True)#大哥的大哥
+    def __unicode__(self):
+        return str(self.id)
+class Group(models.Model):
+    # id = models.AutoField(primary_key=True)
+    g_order = models.CharField(max_length=2000,blank=True, null=True)# 在问卷内的子维度序号
+    g_name = models.CharField(max_length=2000,blank=True, null=True) 
+    items = models.CharField(max_length=2000,blank=True, null=True) #包括哪些题目
+    qn_id = models.ForeignKey(Questionare)#大哥是问卷Questionare
+    qn_name = models.CharField(max_length=2000,blank=True, null=True)   
+    def __unicode__(self):
+        return str(self.id)
+
+class GpTrans(models.Model):
+    # id = models.AutoField(primary_key=True)
+    g_name = models.CharField(max_length=2000,blank=True, null=True) 
+    g_t_order = models.CharField(max_length=2000,blank=True, null=True)# 分数转换规则序号
+    up_limit = models.CharField(max_length=2000,blank=True, null=True,default = '0') #上限值
+    low_limit = models.CharField(max_length=2000,blank=True, null=True,default = '0') #下限值#转换前分数
+    score_transed = models.CharField(max_length=2000,blank=True, null=True)#转换后分数
+    gender = models.CharField(max_length=2000,blank=True, null=True)#性别
+    up_age = models.CharField(max_length=2000,blank=True, null=True,default = '0') #年龄上限值
+    low_age = models.CharField(max_length=2000,blank=True, null=True,default = '0') #年龄下限值
+    qn_id = models.ForeignKey(Questionare)#大哥是问卷Questionare
+    qn_name = models.CharField(max_length=2000,blank=True, null=True)   
+    def __unicode__(self):
+        return str(self.id)
+class GpInterpret(models.Model):
+    # id = models.AutoField(primary_key=True)
+    g_name = models.CharField(max_length=2000,blank=True, null=True)
+    g_i_order = models.CharField(max_length=2000,blank=True, null=True)# 维度解释规则序号
+    up_limit = models.CharField(max_length=2000,blank=True, null=True,default = '0') #上限值
+    low_limit = models.CharField(max_length=2000,blank=True, null=True,default = '0') #下限值
+    g_inter = models.CharField(max_length=2000,blank=True, null=True)#解释语句
+    if_warn = models.BooleanField(blank=True, )#是否列为异常
+    qn_id = models.ForeignKey(Questionare)#大哥是问卷Questionare
+    qn_name = models.CharField(max_length=2000,blank=True, null=True)   
+    def __unicode__(self):
+        return str(self.id)
+class Group2(models.Model):
+    # id = models.AutoField(primary_key=True)
+    g_order = models.CharField(max_length=2000,blank=True, null=True)# 在问卷内序号
+    g_name = models.CharField(max_length=2000,blank=True, null=True) 
+    methods = models.CharField(max_length=2000,blank=True, null=True)
+    items = models.CharField(max_length=2000,blank=True, null=True) #包括哪些子维度
+    qn_id = models.ForeignKey(Questionare)#大哥是问卷Questionare
+    qn_name = models.CharField(max_length=2000,blank=True, null=True)   
+    def __unicode__(self):
+        return str(self.id)
+class QnTrans(models.Model):
+    # id = models.AutoField(primary_key=True)
+    qn_t_order = models.CharField(max_length=2000,blank=True, null=True)# 分数转换规则序号
+    up_limit = models.CharField(max_length=2000,blank=True, null=True,default = '0') #上限值
+    low_limit = models.CharField(max_length=2000,blank=True, null=True,default = '0') #下限值#转换前分数
+    score_transed = models.CharField(max_length=2000,blank=True, null=True)#转换后分数
+    gender = models.CharField(max_length=2000,blank=True, null=True)#性别
+    up_age = models.CharField(max_length=2000,blank=True, null=True,default = '0') #年龄上限值
+    low_age = models.CharField(max_length=2000,blank=True, null=True,default = '0') #年龄下限值
+    qn_id = models.ForeignKey(Questionare)#大哥是问卷Questionare
+    qn_name = models.CharField(max_length=2000,blank=True, null=True)   
+    def __unicode__(self):
+        return str(self.id)
+class QnInterpret(models.Model):
+    # id = models.AutoField(primary_key=True)
+    qn_i_order = models.CharField(max_length=2000,blank=True, null=True)# 维度解释规则序号
+    g_name = models.CharField(max_length=2000,blank=True, null=True) 
+    up_limit = models.CharField(max_length=2000,blank=True, null=True,default = '0') #上限值
+    low_limit = models.CharField(max_length=2000,blank=True, null=True,default = '0') #下限值
+    qn_inter = models.CharField(max_length=2000,blank=True, null=True)#解释语句
+    if_warn = models.BooleanField(blank=True, )#是否列为异常
+    qn_id = models.ForeignKey(Questionare)#大哥是问卷Questionare
+    qn_name = models.CharField(max_length=2000,blank=True, null=True)   
     def __unicode__(self):
         return str(self.id)
 
@@ -103,7 +134,7 @@ class QnRecord(models.Model):
     def __unicode__(self):
         return str(self.id)
 
-class GResult(models.Model):
+class GpResult(models.Model):
     # id = models.AutoField(primary_key=True)#每个维度记录一条    
     g_name = models.CharField(max_length=2000,blank=True, null=True)
     score = models.CharField(max_length=2000,blank=True, null=True)#转换前分数

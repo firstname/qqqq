@@ -49,7 +49,7 @@ def upfiles(request):
             filename = itemfile.name
             filepath = 'files/upload/' + time.strftime('%Y/%m/%d/%H/%M/%S/')
 
-            df = pd.read_excel(itemfile,sheetname = 'Sheet1')#读取问卷信息信息文件
+            df = pd.read_excel(itemfile,sheetname = 'basic')#读取问卷信息信息文件
             ind = df.index
             title = df.at[ind[0],'title']
             shortname = df.at[ind[0],'short_name']
@@ -107,14 +107,108 @@ def qstore(request,pp):
     thefile = get_object_or_404(Questionare, pk=pp)
     title = thefile.title
 
-    df = pd.read_excel(str(thefile.file_path)+str(thefile.file_name),sheetname = 'Sheet2')#读取问题详细信息文件
-    ind = df.index
-    rows = len(df.index)
-    columns = df.columns
-    choicename = re.findall(r'choice+.',str(columns))
-    choices = len(choicename)
-
     if thefile.if_stored == 'not':
+        df1 = pd.read_excel(str(thefile.file_path)+str(thefile.file_name),sheetname = 'rule1')#读取维度包含题目信息文件
+        ind1 = df1.index
+        rows1 = len(df1.index)
+        if rows1 > 0:
+           for row1 in range(rows1):
+            infile1 = Group()#保存每一个维度 
+            infile1.g_order = df1.at[ind[row1],'id']
+            infile1.g_name = df1.at[ind[row1],'sub_name']
+            infile1.items = df1.at[ind[row1],'formula']
+            infile1.qn_id = thefile
+            infile1.qn_name = thefile.title
+            infile1.save()
+
+        df2 = pd.read_excel(str(thefile.file_path)+str(thefile.file_name),sheetname = 'trans1')#读取维度分数转换规则文件
+        ind2 = df2.index
+        rows2 = len(df2.index)
+        if rows2 > 0:
+           for row2 in range(rows2):
+            infile2 = GpTrans()#保存每一个维度规则
+            infile2.g_t_order = df2.at[ind[row2],'id']
+            infile2.g_name = df2.at[ind[row2],'sub_name']
+            infile2.up_limit = df2.at[ind[row2],'up_limit']
+            infile2.low_limit = df2.at[ind[row2],'low_limit']
+            infile2.score_transed = df2.at[ind[row2],'transed_score']
+            infile2.gender = df2.at[ind[row2],'gender']
+            infile2.up_age = df2.at[ind[row2],'up_age']
+            infile2.low_age = df2.at[ind[row2],'low_age']
+            infile2.qn_id = thefile
+            infile2.qn_name = thefile.title
+            infile2.save()
+
+        df3 = pd.read_excel(str(thefile.file_path)+str(thefile.file_name),sheetname = 'interp1')#读取维度分数转换规则文件
+        ind3 = df3.index
+        rows3 = len(df3.index)
+        if rows3 > 0:
+           for row3 in range(rows3):
+            infile3 = GpInterpret()#保存每一个维度规则
+            infile3.g_i_order = df3.at[ind[rows3],'id']
+            infile3.g_name = df3.at[ind[rows3],'sub_name']
+            infile3.up_limit = df3.at[ind[rows3],'up_limit']
+            infile3.low_limit = df3.at[ind[rows3],'low_limit']
+            infile3.g_inter = df3.at[ind[rows3],'interpret']
+            infile3.if_warn = df3.at[ind[rows3],'if_warn']
+            infile3.qn_id = thefile
+            infile3.qn_name = thefile.title
+            infile3.save()
+
+    
+        df4 = pd.read_excel(str(thefile.file_path)+str(thefile.file_name),sheetname = 'rule2')#读取维度包含题目信息文件
+        ind4 = df4.index
+        rows4 = len(df4.index)
+        if rows4 > 0:
+           for row4 in range(rows4):
+            infile4 = Group2()#保存每一个维度 
+            infile4.g_order = df4.at[ind[row4],'id']
+            infile4.g_name = df4.at[ind[row4],'sub_name']
+            infile4.methods = df4.at[ind[row4],'methods']
+            infile4.items = df4.at[ind[row4],'formula']
+            infile4.qn_id = thefile
+            infile4.qn_name = thefile.title
+            infile4.save()
+
+        df5 = pd.read_excel(str(thefile.file_path)+str(thefile.file_name),sheetname = 'trans2')#读取维度分数转换规则文件
+        ind5 = df5.index
+        rows5 = len(df5.index)
+        if rows5 > 0:
+           for row5 in range(rows5):
+            infile5 = QnTrans()#保存每一个维度规则
+            infile5.qn_t_order = df5.at[ind[row5],'id']
+            infile5.up_limit = df5.at[ind[row5],'up_limit']
+            infile5.low_limit = df5.at[ind[row5],'low_limit']
+            infile5.score_transed = df5.at[ind[row5],'transed_score']
+            infile5.gender = df5.at[ind[row5],'gender']
+            infile5.up_age = df5.at[ind[row5],'up_age']
+            infile5.low_age = df5.at[ind[row5],'low_age']
+            infile5.qn_id = thefile
+            infile5.qn_name = thefile.title
+            infile5.save()
+
+        df6 = pd.read_excel(str(thefile.file_path)+str(thefile.file_name),sheetname = 'interp2')#读取维度分数转换规则文件
+        ind6 = df6.index
+        rows6 = len(df6.index)
+        if rows3 > 0:
+           for row6 in range(rows6):
+            infile6 = QnInterpret()#保存每一个维度规则
+            infile6.qn_i_order = df6.at[ind[row6],'id']
+            infile6.g_name = df6.at[ind[row6],'sub_name']
+            infile6.up_limit = df6.at[ind[row6],'up_limit']
+            infile6.low_limit = df6.at[ind[row6],'low_limit']
+            infile6.g_inter = df6.at[ind[row6],'interpret']
+            infile6.if_warn = df6.at[ind[row6],'if_warn']
+            infile6.qn_id = thefile
+            infile6.qn_name = thefile.title
+            infile6.save()    
+
+        df = pd.read_excel(str(thefile.file_path)+str(thefile.file_name),sheetname = 'question')#读取问题详细信息文件
+        ind = df.index
+        rows = len(df.index)
+        columns = df.columns
+        choicename = re.findall(r'choice+.',str(columns))
+        choices = len(choicename)
         for row in range(rows):
             infile = Question()#保存每一道问题
             infile.qn_id = thefile #outkey of 'Question', must be a 'Question' instance
@@ -151,7 +245,7 @@ def preview(request,pp):
     user = User.objects.get(username__exact= generate_user)
     if user is not None and user.is_active:
         thefile = get_object_or_404(Questionare, pk=pp)
-        fileread = pd.read_excel(str(thefile.file_path)+str(thefile.file_name),sheetname = 'Sheet2')
+        fileread = pd.read_excel(str(thefile.file_path)+str(thefile.file_name),sheetname = 'question')
         filecolumn = fileread.columns
         question = fileread.loc[:,['id','question']]
 
@@ -266,7 +360,7 @@ def q_submit(request,pp):
             if not op : #搜索values里面的空值
                 return render_to_response('qq/message.html', RequestContext(request,
                      {'words':'有题目漏选','urlname':'javascript:history.go(-1)'}))
-        #计入问卷作答记录数据库
+        #计入问卷原始作答记录数据库
         qnr = QnRecord()
         qnr.taker_id = request.user
         qnr.taker_name = request.user.username
@@ -282,7 +376,7 @@ def q_submit(request,pp):
              #获取选项和对应的值
             opt = Option.objects.get(Q(q_id=qq),Q(o_name=op))
             vl = opt.o_value
-            #计入题目作答结果数据库
+            #计入题目原始作答结果数据库
             qr = QResult()
             qr.qnr_id = qnr
             qr.taker_id = request.user
@@ -373,7 +467,7 @@ def qdelete(request,pp):
 
 
 @login_required
-def q_result(request,pp):
+def q_result(request,pp): #逐条展示原始的作答记录,而没有合成和转换
     generate_user = request.user.username
     #用户合法
     user = User.objects.get(username__exact= generate_user)
